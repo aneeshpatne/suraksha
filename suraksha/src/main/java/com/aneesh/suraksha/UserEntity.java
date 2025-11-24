@@ -1,5 +1,7 @@
 package com.aneesh.suraksha;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
@@ -41,5 +43,9 @@ public class UserEntity {
     public void setPassword(String password) {
         this.password = password;
     }
+
+}
+
+interface UserRepository extends JpaRepository<UserEntity, Long> {
 
 }
