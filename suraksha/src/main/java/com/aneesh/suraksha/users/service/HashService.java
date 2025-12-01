@@ -25,8 +25,8 @@ public class HashService {
         UserEntity user = new UserEntity();
         user.setMailId(entity.getMailId());
         String hashedPassword = passwordEncoder.encode(entity.getPassword());
-        userRepository.save(user);
         user.setPassword(hashedPassword);
+        userRepository.save(user);
         return new LoginResponse(true, "User Created Successfully");
     }
 }

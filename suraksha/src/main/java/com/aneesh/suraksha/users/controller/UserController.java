@@ -27,7 +27,7 @@ public class UserController {
         this.hashService = hashService;
     }
 
-    @PostMapping("/login")
+    @PostMapping("/signup")
     public ResponseEntity<LoginResponse> createUser(@RequestBody UserEntity userEntity) {
         LoginResponse res = hashService.OnBoard(userEntity);
         return ResponseEntity.status(res.getStatus() ? HttpStatus.OK : HttpStatus.FORBIDDEN).body(res);
