@@ -28,8 +28,8 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<LoginResponse> createUser(@RequestBody UserEntity userEntity) {
-        LoginResponse res = hashService.OnBoard(userEntity);
+    public ResponseEntity<SignupResponse> createUser(@RequestBody UserEntity userEntity) {
+        SignupResponse res = hashService.OnBoard(userEntity);
         return ResponseEntity.status(res.getStatus() ? HttpStatus.OK : HttpStatus.FORBIDDEN).body(res);
     }
 

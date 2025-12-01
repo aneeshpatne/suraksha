@@ -3,7 +3,7 @@ package com.aneesh.suraksha.users.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.aneesh.suraksha.users.controller.LoginResponse;
+import com.aneesh.suraksha.users.controller.SignupResponse;
 import com.aneesh.suraksha.users.model.UserEntity;
 import com.aneesh.suraksha.users.model.UserRepository;
 
@@ -17,16 +17,16 @@ public class HashService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public LoginResponse OnBoard(UserEntity entity) {
+    public SignupResponse OnBoard(UserEntity entity) {
         UserEntity existing = userRepository.findByMailId(entity.getMailId());
         if (existing != null) {
-            return new LoginResponse(false, "User Already Exists");
+            return new SignupResponse(false, "User Already Exists");
         }
         UserEntity user = new UserEntity();
         user.setMailId(entity.getMailId());
         String hashedPassword = passwordEncoder.encode(entity.getPassword());
         user.setPassword(hashedPassword);
         userRepository.save(user);
-        return new LoginResponse(true, "User Created Successfully");
+        return new SignupResponse(true, "User Created Successfully");
     }
 }
