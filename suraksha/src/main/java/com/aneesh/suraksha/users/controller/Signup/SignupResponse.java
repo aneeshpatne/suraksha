@@ -1,4 +1,4 @@
-package com.aneesh.suraksha.users.controller;
+package com.aneesh.suraksha.users.controller.Signup;
 
 public class SignupResponse {
     private boolean status;
