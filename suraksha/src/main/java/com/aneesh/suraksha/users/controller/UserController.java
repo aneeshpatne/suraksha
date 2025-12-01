@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.aneesh.suraksha.users.model.UserEntity;
 import com.aneesh.suraksha.users.model.UserRepository;
+import com.aneesh.suraksha.users.service.HashService;
 
 import java.util.List;
 
@@ -18,18 +19,18 @@ public class UserController {
     @Autowired
     private final UserRepository userRepository;
 
-    public UserController(UserRepository userRepository) {
+    @Autowired
+    private final HashService hashService;
+
+    public UserController(UserRepository userRepository, HashService hashService) {
         this.userRepository = userRepository;
+        this.hashService = hashService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> createUser(@RequestBody UserEntity userEntity) {
-        UserEntity existingUser = userRepository.findByMailId(userEntity.getMailId());
-        if (existingUser != null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new LoginResponse(false, "Operation Failed"));
-        }
-        userRepository.save(userEntity);
-        return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse(true, "User Created Successfully"));
+        LoginResponse res = hashService.OnBoard(userEntity);
+        return ResponseEntity.status(res.getStatus() ? HttpStatus.OK : HttpStatus.FORBIDDEN).body(res);
     }
 
     @GetMapping("/users")

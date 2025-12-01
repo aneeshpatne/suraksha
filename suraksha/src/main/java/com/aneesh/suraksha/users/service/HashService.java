@@ -17,7 +17,7 @@ public class HashService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public LoginResponse Hash(UserEntity entity) {
+    public LoginResponse OnBoard(UserEntity entity) {
         UserEntity existing = userRepository.findByMailId(entity.getMailId());
         if (existing != null) {
             return new LoginResponse(false, "User Already Exists");
