@@ -15,8 +15,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // Disable CSRF for Postman/testing
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/users").permitAll() // Allow access to /login and /users
-                        .anyRequest().authenticated() // Require auth for everything else
+                        .anyRequest().permitAll() // Allow all routes for now
                 );
 
         return http.build();
