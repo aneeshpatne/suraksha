@@ -1,4 +1,4 @@
-package com.aneesh.suraksha;
+package com.aneesh.suraksha.users.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.aneesh.suraksha.users.model.UserEntity;
+import com.aneesh.suraksha.users.model.UserRepository;
+
 import java.util.List;
 
 @RestController

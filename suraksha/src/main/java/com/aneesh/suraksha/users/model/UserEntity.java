@@ -1,6 +1,4 @@
-package com.aneesh.suraksha;
-
-import org.springframework.data.jpa.repository.JpaRepository;
+package com.aneesh.suraksha.users.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -44,8 +42,4 @@ public class UserEntity {
         this.password = password;
     }
 
-}
-
-interface UserRepository extends JpaRepository<UserEntity, Long> {
-    UserEntity findByMailId(String mailId);
 }
