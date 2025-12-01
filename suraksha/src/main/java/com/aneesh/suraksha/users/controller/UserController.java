@@ -42,7 +42,7 @@ public class UserController {
 
     @PostMapping("/login")
     public void postMethodName(@RequestBody LoginRequest entity) {
-        System.out.println(entity.getEmail());
+        System.out.println(entity.getMailId());
         System.out.println(entity.getPassword());
     }
 
