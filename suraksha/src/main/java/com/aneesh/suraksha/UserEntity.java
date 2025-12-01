@@ -14,7 +14,7 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
+    private String mailId;
     private String password;
 
     public UserEntity() {
@@ -28,12 +28,12 @@ public class UserEntity {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public void setMailId(String mailId) {
+        this.mailId = mailId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getMailId() {
+        return this.mailId;
     }
 
     public String getPassword() {
@@ -47,5 +47,5 @@ public class UserEntity {
 }
 
 interface UserRepository extends JpaRepository<UserEntity, Long> {
-
+    UserEntity findByMailId(String mailId);
 }
