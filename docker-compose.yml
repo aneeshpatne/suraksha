@@ -1,18 +1,13 @@
-version: "3.9"
+version: "3.8"
 
 services:
-  postgres:
-    image: postgres:16
-    container_name: suraksha-postgres
-    restart: always
+  db:
+    image: postgres:15-alpine
+    container_name: suraksha_postgres
+    restart: unless-stopped
     environment:
-      POSTGRES_DB: suraksha
-      POSTGRES_USER: suraksha_user
-      POSTGRES_PASSWORD: supersecret
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: securepassword
+      POSTGRES_DB: my_database
     ports:
       - "5433:5432"
-    volumes:
-      - suraksha_data:/var/lib/postgresql/data
-
-volumes:
-  suraksha_data:
