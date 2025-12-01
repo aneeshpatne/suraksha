@@ -1,6 +1,8 @@
 package com.aneesh.suraksha;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,17 +19,35 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String createUser(@RequestBody UserEntity userEntity) {
+    public ResponseEntity<LoginResponse> createUser(@RequestBody UserEntity userEntity) {
         UserEntity existingUser = userRepository.findByMailId(userEntity.getMailId());
         if (existingUser != null) {
-            return "User Exists";
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new LoginResponse(false, "Operation Failed"));
         }
         userRepository.save(userEntity);
-        return "User Created Successfully";
+        return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse(true, "User Created Successfully"));
     }
 
     @GetMapping("/users")
     public List<UserEntity> getAllUsers() {
         return userRepository.findAll();
+    }
+}
+
+class LoginResponse {
+    private boolean status;
+    private String message;
+
+    public LoginResponse(boolean status, String message) {
+        this.status = status;
+        this.message = message;
+    }
+
+    public boolean getStatus() {
+        return this.status;
+    }
+
+    public String getMessage() {
+        return this.message;
     }
 }
