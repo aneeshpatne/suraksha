@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.aneesh.suraksha.users.controller.Login.LoginRequest;
 import com.aneesh.suraksha.users.controller.Signup.SignupResponse;
 import com.aneesh.suraksha.users.model.UserEntity;
 import com.aneesh.suraksha.users.model.UserRepository;
@@ -38,4 +39,11 @@ public class UserController {
     public List<UserEntity> getAllUsers() {
         return userRepository.findAll();
     }
+
+    @PostMapping("/login")
+    public void postMethodName(@RequestBody LoginRequest entity) {
+        System.out.println(entity.getEmail());
+        System.out.println(entity.getPassword());
+    }
+
 }
