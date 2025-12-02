@@ -1,6 +1,6 @@
 package com.aneesh.suraksha.users.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.aneesh.suraksha.users.service.LoginService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 import com.aneesh.suraksha.users.controller.Login.LoginRequest;
+import com.aneesh.suraksha.users.controller.Login.LoginResponse;
 import com.aneesh.suraksha.users.controller.Signup.SignupResponse;
 import com.aneesh.suraksha.users.model.UserEntity;
 import com.aneesh.suraksha.users.model.UserRepository;
@@ -18,15 +21,17 @@ import java.util.List;
 
 @RestController
 public class UserController {
-    @Autowired
+
+    private final LoginService loginService;
+
     private final UserRepository userRepository;
 
-    @Autowired
     private final HashService hashService;
 
-    public UserController(UserRepository userRepository, HashService hashService) {
+    public UserController(UserRepository userRepository, HashService hashService, LoginService loginService) {
         this.userRepository = userRepository;
         this.hashService = hashService;
+        this.loginService = loginService;
     }
 
     @PostMapping("/signup")
@@ -41,9 +46,9 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public void postMethodName(@RequestBody LoginRequest entity) {
-        System.out.println(entity.getMailId());
-        System.out.println(entity.getPassword());
+    public ResponseEntity<LoginResponse> postMethodName(@Valid @RequestBody LoginRequest entity) {
+        LoginResponse res = loginService.login(entity);
+        return ResponseEntity.status(res.getStatus() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED).body(res);
     }
 
 }
