@@ -21,6 +21,7 @@ import com.aneesh.suraksha.users.model.UserRepository;
 import com.aneesh.suraksha.users.service.HashService;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 public class UserController {
@@ -61,6 +62,11 @@ public class UserController {
     @PostMapping("/auth/register-organisation")
     public void postMethodName(@RequestBody Organisations entity) {
         organisationsRepository.save(entity);
+    }
+
+    @GetMapping("/auth/get-organisations")
+    public List<Organisations> getMethodName() {
+        return organisationsRepository.findAll();
     }
 
 }
