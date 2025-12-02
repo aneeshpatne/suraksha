@@ -1,13 +1,14 @@
 package com.aneesh.suraksha.users.model;
 
 import java.security.SecureRandom;
-import java.util.UUID;
 
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "organisations")
 public class Organisations {
     @Id
     private String id;

@@ -1,11 +1,17 @@
 package com.aneesh.suraksha.users.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
 @Entity
+@Table(name = "users")
 public class UserEntity {
 
     @Id
@@ -14,6 +20,10 @@ public class UserEntity {
 
     private String mailId;
     private String password;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organisation_id", nullable = false)
+    private Organisations organisations;
 
     public UserEntity() {
     }
