@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 
 import com.aneesh.suraksha.users.controller.Login.LoginRequest;
 import com.aneesh.suraksha.users.controller.Login.LoginResponse;
+import com.aneesh.suraksha.users.controller.Signup.SignupRequest;
 import com.aneesh.suraksha.users.controller.Signup.SignupResponse;
 import com.aneesh.suraksha.users.model.UserEntity;
 import com.aneesh.suraksha.users.model.UserRepository;
@@ -35,8 +36,8 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponse> createUser(@RequestBody UserEntity userEntity) {
-        SignupResponse res = hashService.OnBoard(userEntity);
+    public ResponseEntity<SignupResponse> createUser(@RequestBody SignupRequest entity) {
+        SignupResponse res = hashService.OnBoard(entity);
         return ResponseEntity.status(res.getStatus() ? HttpStatus.OK : HttpStatus.FORBIDDEN).body(res);
     }
 
