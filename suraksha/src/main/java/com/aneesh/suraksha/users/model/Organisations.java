@@ -1,25 +1,37 @@
 package com.aneesh.suraksha.users.model;
 
+import java.security.SecureRandom;
+import java.util.UUID;
+
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
+
 import jakarta.persistence.Id;
-import jakarta.persistence.GenerationType;
 
 @Entity
 public class Organisations {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private String id;
     private String name;
+    private static final SecureRandom secureRandom = new SecureRandom();
+    private static final String BASE62 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     public Organisations() {
+        this.id = "org_" + secureRandomString(12);
     }
 
-    public long getId() {
+    private String secureRandomString(int length) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append(BASE62.charAt(secureRandom.nextInt(BASE62.length())));
+        }
+        return sb.toString();
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
