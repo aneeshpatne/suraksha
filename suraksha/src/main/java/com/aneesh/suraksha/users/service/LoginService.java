@@ -25,6 +25,9 @@ public class LoginService {
         if (user == null) {
             return new LoginResponse(false, "User Does Not exist");
         }
+        if (!user.getOrganisations().getId().equals(request.organisationId())) {
+            return new LoginResponse(false, "User does not belong to this organisation");
+        }
         boolean match = passwordEncoder.matches(request.password(), user.getPassword());
         if (!match) {
             return new LoginResponse(false, "Mail Id or Password is Wrong");

@@ -52,4 +52,12 @@ public class UserEntity {
         this.password = password;
     }
 
+    public Organisations getOrganisations() {
+        return organisations;
+    }
+
+    public void setOrganisations(Organisations organisations) {
+        this.organisations = organisations;
+    }
+
 }
