@@ -1,6 +1,10 @@
 package com.aneesh.suraksha.users.controller;
 
 import com.aneesh.suraksha.users.service.LoginService;
+import com.aneesh.suraksha.users.service.OnboardRequest;
+import com.aneesh.suraksha.users.service.OnboardResponse;
+import com.aneesh.suraksha.users.service.OrganisationOnboard;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +25,6 @@ import com.aneesh.suraksha.users.model.UserRepository;
 import com.aneesh.suraksha.users.service.HashService;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 public class UserController {
@@ -34,12 +37,15 @@ public class UserController {
 
     private final HashService hashService;
 
+    private final OrganisationOnboard organisationOnboard;
+
     public UserController(UserRepository userRepository, HashService hashService, LoginService loginService,
-            OrganisationsRepository organisationsRepository) {
+            OrganisationsRepository organisationsRepository, OrganisationOnboard organisationOnboard) {
         this.userRepository = userRepository;
         this.hashService = hashService;
         this.loginService = loginService;
         this.organisationsRepository = organisationsRepository;
+        this.organisationOnboard = organisationOnboard;
     }
 
     @PostMapping("/signup")
@@ -60,8 +66,10 @@ public class UserController {
     }
 
     @PostMapping("/auth/register-organisation")
-    public void postMethodName(@RequestBody Organisations entity) {
-        organisationsRepository.save(entity);
+    public Organisations registerOrganisation(@RequestBody OnboardRequest entity) {
+        Organisations res = organisationOnboard.OnBoard(entity);
+        return res;
+
     }
 
     @GetMapping("/auth/get-organisations")
