@@ -66,8 +66,8 @@ public class UserController {
     }
 
     @PostMapping("/auth/register-organisation")
-    public Organisations registerOrganisation(@RequestBody OnboardRequest entity) {
-        Organisations res = organisationOnboard.OnBoard(entity);
+    public OnboardResponse registerOrganisation(@RequestBody OnboardRequest entity) {
+        OnboardResponse res = organisationOnboard.OnBoard(entity);
         return res;
 
     }

@@ -5,6 +5,12 @@ public class OnboardResponse {
     private String name;
     private String apiKey;
 
+    public OnboardResponse(String id, String name, String apiKey) {
+        this.id = id;
+        this.name = name;
+        this.apiKey = apiKey;
+    }
+
     public String getId() {
         return id;
     }
