@@ -11,6 +11,7 @@ public class Organisations {
     @Id
     private String id;
     private String name;
+    private String apiKey;
 
     public Organisations() {
     }
@@ -21,6 +22,14 @@ public class Organisations {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    public String getApiKey() {
+        return this.apiKey;
     }
 
     public String getName() {
