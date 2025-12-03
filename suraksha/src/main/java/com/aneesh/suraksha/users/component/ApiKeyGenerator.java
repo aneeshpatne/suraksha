@@ -3,7 +3,6 @@ package com.aneesh.suraksha.users.component;
 import java.security.SecureRandom;
 import java.util.Base64;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
