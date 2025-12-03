@@ -21,11 +21,11 @@ public class LoginService {
     }
 
     public LoginResponse login(LoginRequest request) {
-        UserEntity user = userRepository.findByMailId(request.getMailId());
+        UserEntity user = userRepository.findByMailId(request.mailId());
         if (user == null) {
             return new LoginResponse(false, "User Does Not exist");
         }
-        boolean match = passwordEncoder.matches(request.getPassword(), user.getPassword());
+        boolean match = passwordEncoder.matches(request.password(), user.getPassword());
         if (!match) {
             return new LoginResponse(false, "Mail Id or Password is Wrong");
         }

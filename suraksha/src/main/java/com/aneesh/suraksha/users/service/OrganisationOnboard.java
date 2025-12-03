@@ -29,8 +29,8 @@ public class OrganisationOnboard {
         String API_KEY = apiKeyGenerator.generateAPIKey();
         String ID = organisationIdGenerator.generateId();
         String HashedKey = passwordEncoder.encode(API_KEY);
-        Organisations organisation = new Organisations(ID, req.name, HashedKey);
-        OnboardResponse res = new OnboardResponse(ID, req.name, API_KEY);
+        Organisations organisation = new Organisations(ID, req.name(), HashedKey);
+        OnboardResponse res = new OnboardResponse(ID, req.name(), API_KEY);
         organisationsRepository.save(organisation);
         return res;
     }

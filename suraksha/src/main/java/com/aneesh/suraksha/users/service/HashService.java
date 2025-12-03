@@ -19,13 +19,13 @@ public class HashService {
     }
 
     public SignupResponse OnBoard(SignupRequest entity) {
-        UserEntity existing = userRepository.findByMailId(entity.getMailId());
+        UserEntity existing = userRepository.findByMailId(entity.mailId());
         if (existing != null) {
             return new SignupResponse(false, "User Already Exists");
         }
         UserEntity user = new UserEntity();
-        user.setMailId(entity.getMailId());
-        String hashedPassword = passwordEncoder.encode(entity.getPassword());
+        user.setMailId(entity.mailId());
+        String hashedPassword = passwordEncoder.encode(entity.password());
         user.setPassword(hashedPassword);
         userRepository.save(user);
         return new SignupResponse(true, "User Created Successfully");

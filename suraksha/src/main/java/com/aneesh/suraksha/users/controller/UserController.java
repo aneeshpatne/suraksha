@@ -51,7 +51,7 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> createUser(@RequestBody SignupRequest entity) {
         SignupResponse res = hashService.OnBoard(entity);
-        return ResponseEntity.status(res.getStatus() ? HttpStatus.OK : HttpStatus.FORBIDDEN).body(res);
+        return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.FORBIDDEN).body(res);
     }
 
     @GetMapping("/users")
@@ -62,7 +62,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> postMethodName(@Valid @RequestBody LoginRequest entity) {
         LoginResponse res = loginService.login(entity);
-        return ResponseEntity.status(res.getStatus() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED).body(res);
+        return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED).body(res);
     }
 
     @PostMapping("/auth/register-organisation")
