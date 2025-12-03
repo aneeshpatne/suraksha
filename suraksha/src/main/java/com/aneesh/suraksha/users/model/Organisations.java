@@ -16,6 +16,12 @@ public class Organisations {
     public Organisations() {
     }
 
+    public Organisations(String id, String name, String apiKey) {
+        this.id = id;
+        this.name = name;
+        this.apiKey = apiKey;
+    }
+
     public String getId() {
         return id;
     }
