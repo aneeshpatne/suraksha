@@ -1,10 +1,13 @@
 package com.aneesh.suraksha.users.service;
 
+import org.springframework.stereotype.Service;
+
 import com.aneesh.suraksha.users.component.ApiKeyGenerator;
 import com.aneesh.suraksha.users.component.OrganisationIdGenerator;
 import com.aneesh.suraksha.users.model.Organisations;
 import com.aneesh.suraksha.users.model.OrganisationsRepository;
 
+@Service
 public class OrganisationOnboard {
     private final OrganisationIdGenerator organisationIdGenerator;
     private final OrganisationsRepository organisationsRepository;
