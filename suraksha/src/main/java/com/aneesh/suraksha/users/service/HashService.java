@@ -44,8 +44,7 @@ public class HashService {
         String hashedPassword = passwordEncoder.encode(entity.password());
         user.setPassword(hashedPassword);
         userRepository.save(user);
-        String accessToken = jwtService.generateToken(user);
-        String refreshToken = refresh
+        // String accessToken = jwtService.generateToken(user);
         return new SignupResponse(true, "User Created Successfully");
     }
 }
