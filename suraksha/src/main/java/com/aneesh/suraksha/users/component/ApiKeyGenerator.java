@@ -1,13 +1,24 @@
 package com.aneesh.suraksha.users.component;
 
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
 import org.springframework.stereotype.Component;
+
+import com.aneesh.suraksha.config.AppSecretConfig;
 
 @Component
 public class ApiKeyGenerator {
-    public ApiKeyGenerator(App)
+
+    private final AppSecretConfig appSecretConfig;
+
+    public ApiKeyGenerator(AppSecretConfig appSecretConfig) {
+        this.appSecretConfig = appSecretConfig;
+    }
 
     public String generateAPIKey() {
         String prefix = "suraksha_apiKey_";
@@ -17,8 +28,21 @@ public class ApiKeyGenerator {
         return prefix + RandomPart;
     }
 
-    public String hashAPIKey() {
+    private byte[] getSecretBytes() {
+        String secret = appSecretConfig.getAPIKeySecret();
+        return Base64.getDecoder().decode(secret);
+    }
 
+    public String hashAPIKey(String apiKey) {
+        try {
+            Mac mac = Mac.getInstance("HmacSHA256");
+            SecretKeySpec keySpec = new SecretKeySpec(getSecretBytes(), "HmacSHA256");
+            mac.init(keySpec);
+            byte[] hmacSecret = mac.doFinal(apiKey.getBytes(StandardCharsets.UTF_8));
+            return Base64.getEncoder().encodeToString(hmacSecret);
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to hash API key", e);
+        }
     }
 
 }

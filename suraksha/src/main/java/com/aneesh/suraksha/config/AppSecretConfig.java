@@ -11,12 +11,19 @@ public class AppSecretConfig {
     @Value("${app.secret_refresh.key}")
     private String secretRefreshKey;
 
+    @Value("${app.secret_api.key}")
+    private String secretApiKey;
+
     public String getSecretKey() {
         return secretKey;
     }
 
     public String getRefreshSecretKey() {
         return secretRefreshKey;
+    }
+
+    public String getAPIKeySecret() {
+        return secretApiKey;
     }
 
 }
