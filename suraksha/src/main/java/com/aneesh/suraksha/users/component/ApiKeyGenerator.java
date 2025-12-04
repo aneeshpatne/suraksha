@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ApiKeyGenerator {
+    public ApiKeyGenerator(App)
 
     public String generateAPIKey() {
         String prefix = "suraksha_apiKey_";
@@ -14,6 +15,9 @@ public class ApiKeyGenerator {
         new SecureRandom().nextBytes(RandomBytes);
         String RandomPart = Base64.getUrlEncoder().withoutPadding().encodeToString(RandomBytes);
         return prefix + RandomPart;
+    }
+
+    public String hashAPIKey() {
 
     }
 

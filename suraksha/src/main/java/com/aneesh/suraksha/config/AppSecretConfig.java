@@ -8,8 +8,15 @@ public class AppSecretConfig {
 
     @Value("${app.secret.key}")
     private String secretKey;
+    @Value("${app.secret_refresh.key}")
+    private String secretRefreshKey;
 
     public String getSecretKey() {
         return secretKey;
     }
+
+    public String getRefreshSecretKey() {
+        return secretRefreshKey;
+    }
+
 }
