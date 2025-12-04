@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 import com.aneesh.suraksha.users.controller.Login.LoginRequest;
@@ -49,8 +50,8 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponse> createUser(@RequestBody SignupRequest entity) {
-        SignupResponse res = hashService.OnBoard(entity);
+    public ResponseEntity<SignupResponse> createUser(@RequestBody SignupRequest entity, HttpServletResponse response) {
+        SignupResponse res = hashService.OnBoard(entity, response);
         return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.FORBIDDEN).body(res);
     }
 
