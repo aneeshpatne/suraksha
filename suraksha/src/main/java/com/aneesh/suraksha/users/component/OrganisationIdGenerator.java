@@ -15,4 +15,5 @@ public class OrganisationIdGenerator {
         String RandomPart = Base64.getUrlEncoder().withoutPadding().encodeToString(RandomBytes);
         return prefix + RandomPart;
     }
+
 }
