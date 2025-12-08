@@ -1,4 +1,4 @@
 package com.aneesh.suraksha.users.controller.Login;
 
-public record LoginResponse(Boolean status, String message, String token) {
+public record LoginResponse(Boolean status, String message) {
 }

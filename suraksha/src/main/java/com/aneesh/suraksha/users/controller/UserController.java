@@ -1,5 +1,6 @@
 package com.aneesh.suraksha.users.controller;
 
+import com.aneesh.suraksha.users.service.LoginResult;
 import com.aneesh.suraksha.users.service.LoginService;
 import com.aneesh.suraksha.users.service.OnboardRequest;
 import com.aneesh.suraksha.users.service.OnboardResponse;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
@@ -62,8 +64,17 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest entity, HttpServletResponse response) {
-        LoginResponse res = loginService.login(entity);
-        return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED).body(res);
+        LoginResult res = loginService.login(entity);
+        if (res.status()) {
+            Cookie cookie = new Cookie("jwt", res.token());
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60);
+            response.addCookie(cookie);
+        }
+        return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED)
+                .body(new LoginResponse(res.status(), res.message()));
     }
 
     @PostMapping("/auth/register-organisation")
