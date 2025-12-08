@@ -30,7 +30,7 @@ public class ApiKeyGenerator {
 
     private byte[] getSecretBytes() {
         String secret = appSecretConfig.getAPIKeySecret();
-        return Base64.getDecoder().decode(secret);
+        return Base64.getUrlDecoder().decode(secret);
     }
 
     public String hashAPIKey(String apiKey) {
