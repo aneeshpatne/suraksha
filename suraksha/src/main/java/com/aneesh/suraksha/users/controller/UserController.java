@@ -51,18 +51,18 @@ public class UserController {
         this.organisationOnboard = organisationOnboard;
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/api/v1/auth/token/register")
     public ResponseEntity<SignupResponse> createUser(@RequestBody SignupRequest entity, HttpServletResponse response) {
         SignupResponse res = hashService.OnBoard(entity, response);
         return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.FORBIDDEN).body(res);
     }
 
-    @GetMapping("/users")
+    @GetMapping("/api/v1/users")
     public List<UserEntity> getAllUsers() {
         return userRepository.findAll();
     }
 
-    @PostMapping("/login")
+    @PostMapping("/api/v1/auth/token/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest entity, HttpServletResponse response) {
         LoginResult res = loginService.login(entity);
         if (res.status()) {
@@ -77,14 +77,14 @@ public class UserController {
                 .body(new LoginResponse(res.status(), res.message()));
     }
 
-    @PostMapping("/auth/register-organisation")
+    @PostMapping("/api/v1/organisations")
     public OnboardResponse registerOrganisation(@RequestBody OnboardRequest entity) {
         OnboardResponse res = organisationOnboard.OnBoard(entity);
         return res;
 
     }
 
-    @GetMapping("/auth/get-organisations")
+    @GetMapping("/api/v1/organisations")
     public List<Organisations> getMethodName() {
         return organisationsRepository.findAll();
     }
