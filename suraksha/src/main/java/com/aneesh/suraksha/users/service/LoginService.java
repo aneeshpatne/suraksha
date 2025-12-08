@@ -31,20 +31,20 @@ public class LoginService {
         try {
             UserEntity user = userRepository.findByMailId(request.mailId());
             if (user == null) {
-                return new LoginResponse(false, "User Does Not exist", null);
+                return new LoginResponse(false, "Invalid credentials", null);
             }
-            if (!user.getOrganisations().getId().equals(request.organisationId())) {
-                return new LoginResponse(false, "User does not belong to this organisation", null);
+            if (user.getOrganisations() == null || !user.getOrganisations().getId().equals(request.organisationId())) {
+                return new LoginResponse(false, "Invalid credentials", null);
             }
             boolean match = passwordEncoder.matches(request.password(), user.getPassword());
             if (!match) {
-                return new LoginResponse(false, "Mail Id or Password is Wrong", null);
+                return new LoginResponse(false, "Invalid credentials", null);
             }
             String token = jwtService.generateToken(user);
             return new LoginResponse(true, "Success", token);
         } catch (Exception e) {
             logger.error("Error during login for user: {}", request.mailId(), e);
-            return new LoginResponse(false, "An error occurred", null);
+            return new LoginResponse(false, "Invalid credentials", null);
         }
     }
 }

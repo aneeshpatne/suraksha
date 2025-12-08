@@ -61,7 +61,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> postMethodName(@Valid @RequestBody LoginRequest entity) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest entity) {
         LoginResponse res = loginService.login(entity);
         return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED).body(res);
     }
