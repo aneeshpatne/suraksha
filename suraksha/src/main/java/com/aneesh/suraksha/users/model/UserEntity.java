@@ -1,5 +1,7 @@
 package com.aneesh.suraksha.users.model;
 
+import java.util.UUID;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
@@ -15,8 +17,8 @@ import jakarta.persistence.GenerationType;
 public class UserEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
     private String mailId;
     private String password;
@@ -28,11 +30,11 @@ public class UserEntity {
     public UserEntity() {
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
