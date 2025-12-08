@@ -14,6 +14,12 @@ public class AppSecretConfig {
     @Value("${app.secret_api.key}")
     private String secretApiKey;
 
+    @Value("${rsa.private-key}")
+    private String rsaPrivateKey;
+
+    @Value("${rsa.public-key}")
+    private String rsaPublicKey;
+
     public String getSecretKey() {
         return secretKey;
     }
@@ -24,6 +30,14 @@ public class AppSecretConfig {
 
     public String getAPIKeySecret() {
         return secretApiKey;
+    }
+
+    public String getRsaPrivateKey() {
+        return rsaPrivateKey;
+    }
+
+    public String getRsaPublicKey() {
+        return rsaPublicKey;
     }
 
 }
