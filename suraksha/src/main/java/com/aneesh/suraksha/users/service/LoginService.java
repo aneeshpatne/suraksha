@@ -1,5 +1,7 @@
 package com.aneesh.suraksha.users.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -11,27 +13,38 @@ import com.aneesh.suraksha.users.model.UserRepository;
 @Service
 public class LoginService {
 
+    private final JwtService jwtService;
+
+    private static final Logger logger = LoggerFactory.getLogger(LoginService.class);
+
     private final PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
 
-    public LoginService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public LoginService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     public LoginResponse login(LoginRequest request) {
-        UserEntity user = userRepository.findByMailId(request.mailId());
-        if (user == null) {
-            return new LoginResponse(false, "User Does Not exist");
+        try {
+            UserEntity user = userRepository.findByMailId(request.mailId());
+            if (user == null) {
+                return new LoginResponse(false, "User Does Not exist", null);
+            }
+            if (!user.getOrganisations().getId().equals(request.organisationId())) {
+                return new LoginResponse(false, "User does not belong to this organisation", null);
+            }
+            boolean match = passwordEncoder.matches(request.password(), user.getPassword());
+            if (!match) {
+                return new LoginResponse(false, "Mail Id or Password is Wrong", null);
+            }
+            String token = jwtService.generateToken(user);
+            return new LoginResponse(true, "Success", token);
+        } catch (Exception e) {
+            logger.error("Error during login for user: {}", request.mailId(), e);
+            return new LoginResponse(false, "An error occurred", null);
         }
-        if (!user.getOrganisations().getId().equals(request.organisationId())) {
-            return new LoginResponse(false, "User does not belong to this organisation");
-        }
-        boolean match = passwordEncoder.matches(request.password(), user.getPassword());
-        if (!match) {
-            return new LoginResponse(false, "Mail Id or Password is Wrong");
-        }
-        return new LoginResponse(true, "Success");
     }
 }
