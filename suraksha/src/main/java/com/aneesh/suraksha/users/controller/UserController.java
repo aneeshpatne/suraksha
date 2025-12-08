@@ -21,6 +21,7 @@ import com.aneesh.suraksha.users.controller.Login.LoginRequest;
 import com.aneesh.suraksha.users.controller.Login.LoginResponse;
 import com.aneesh.suraksha.users.controller.Signup.SignupRequest;
 import com.aneesh.suraksha.users.controller.Signup.SignupResponse;
+import com.aneesh.suraksha.users.dto.UserDTO;
 import com.aneesh.suraksha.users.model.Organisations;
 import com.aneesh.suraksha.users.model.OrganisationsRepository;
 import com.aneesh.suraksha.users.model.UserEntity;
@@ -58,8 +59,8 @@ public class UserController {
     }
 
     @GetMapping("/api/v1/users")
-    public List<UserEntity> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDTO> getAllUsers() {
+        return userRepository.findAllUsersAsDTO();
     }
 
     @PostMapping("/api/v1/auth/token/login")
