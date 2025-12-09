@@ -53,8 +53,16 @@ public class UserController {
     }
 
     @PostMapping("/api/v1/auth/token/register")
-    public ResponseEntity<SignupResponse> createUser(@RequestBody SignupRequest entity) {
+    public ResponseEntity<SignupResponse> createUser(@RequestBody SignupRequest entity, HttpServletResponse response) {
         SignupResponse res = registrationService.OnBoard(entity);
+        if (res.status()) {
+            Cookie cookie = new Cookie("jwt", res.token());
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
+            cookie.setPath("/");
+            cookie.setMaxAge(60 * 60);
+            response.addCookie(cookie);
+        }
         return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.FORBIDDEN).body(res);
     }
 
