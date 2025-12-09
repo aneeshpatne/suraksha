@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
@@ -72,8 +73,10 @@ public class UserController {
     }
 
     @PostMapping("/api/v1/auth/token/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest entity, HttpServletResponse response) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest entity, HttpServletResponse response,
+            HttpServletRequest request) {
         LoginResult res = loginService.login(entity);
+
         if (res.status()) {
             Cookie cookie = new Cookie("jwt", res.token());
             cookie.setHttpOnly(true);
