@@ -24,7 +24,6 @@ import com.aneesh.suraksha.users.controller.Signup.SignupResponse;
 import com.aneesh.suraksha.users.dto.UserDTO;
 import com.aneesh.suraksha.users.model.Organisations;
 import com.aneesh.suraksha.users.model.OrganisationsRepository;
-import com.aneesh.suraksha.users.model.UserEntity;
 import com.aneesh.suraksha.users.model.UserRepository;
 import com.aneesh.suraksha.users.service.HashService;
 
