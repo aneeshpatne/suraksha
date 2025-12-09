@@ -90,6 +90,7 @@ public class UserController {
             response.addCookie(cookie);
             String ip = clientIPAddress.getIP(request);
             String userAgent = request.getHeader("User-Agent");
+
         }
 
         return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED)
