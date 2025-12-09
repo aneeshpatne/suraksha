@@ -8,20 +8,18 @@ import com.aneesh.suraksha.users.controller.Signup.SignupResponse;
 import com.aneesh.suraksha.users.model.UserEntity;
 import com.aneesh.suraksha.users.model.UserRepository;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 import com.aneesh.suraksha.users.model.Organisations;
 import com.aneesh.suraksha.users.model.OrganisationsRepository;
 
 @Service
-public class HashService {
+public class RegistrationService {
 
     private final JwtService jwtService;
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private OrganisationsRepository organisationsRepository;
 
-    public HashService(UserRepository userRepository, PasswordEncoder passwordEncoder,
+    public RegistrationService(UserRepository userRepository, PasswordEncoder passwordEncoder,
             OrganisationsRepository organisationsRepository, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -29,7 +27,7 @@ public class HashService {
         this.jwtService = jwtService;
     }
 
-    public SignupResponse OnBoard(SignupRequest entity, HttpServletResponse response) {
+    public SignupResponse OnBoard(SignupRequest entity) {
         Organisations organisation = organisationsRepository.findById(entity.organisationId()).orElse(null);
         if (organisation == null) {
             return new SignupResponse(false, "Organisation Not Found");

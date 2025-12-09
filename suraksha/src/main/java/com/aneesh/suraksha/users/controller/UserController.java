@@ -25,7 +25,7 @@ import com.aneesh.suraksha.users.dto.UserDTO;
 import com.aneesh.suraksha.users.model.Organisations;
 import com.aneesh.suraksha.users.model.OrganisationsRepository;
 import com.aneesh.suraksha.users.model.UserRepository;
-import com.aneesh.suraksha.users.service.HashService;
+import com.aneesh.suraksha.users.service.RegistrationService;
 
 import java.util.List;
 
@@ -38,22 +38,23 @@ public class UserController {
 
     private final UserRepository userRepository;
 
-    private final HashService hashService;
+    private final RegistrationService registrationService;
 
     private final OrganisationOnboard organisationOnboard;
 
-    public UserController(UserRepository userRepository, HashService hashService, LoginService loginService,
+    public UserController(UserRepository userRepository, RegistrationService registrationService,
+            LoginService loginService,
             OrganisationsRepository organisationsRepository, OrganisationOnboard organisationOnboard) {
         this.userRepository = userRepository;
-        this.hashService = hashService;
+        this.registrationService = registrationService;
         this.loginService = loginService;
         this.organisationsRepository = organisationsRepository;
         this.organisationOnboard = organisationOnboard;
     }
 
     @PostMapping("/api/v1/auth/token/register")
-    public ResponseEntity<SignupResponse> createUser(@RequestBody SignupRequest entity, HttpServletResponse response) {
-        SignupResponse res = hashService.OnBoard(entity, response);
+    public ResponseEntity<SignupResponse> createUser(@RequestBody SignupRequest entity) {
+        SignupResponse res = registrationService.OnBoard(entity);
         return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.FORBIDDEN).body(res);
     }
 
