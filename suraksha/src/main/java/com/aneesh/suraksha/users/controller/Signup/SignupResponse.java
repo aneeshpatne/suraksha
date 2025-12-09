@@ -1,4 +1,6 @@
 package com.aneesh.suraksha.users.controller.Signup;
 
-public record SignupResponse(boolean status, String message, String token) {
+import com.aneesh.suraksha.users.model.UserEntity;
+
+public record SignupResponse(boolean status, String message, String token, UserEntity user) {
 }

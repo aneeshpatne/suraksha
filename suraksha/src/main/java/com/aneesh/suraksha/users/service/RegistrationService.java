@@ -31,11 +31,11 @@ public class RegistrationService {
         try {
             Organisations organisation = organisationsRepository.findById(entity.organisationId()).orElse(null);
             if (organisation == null) {
-                return new SignupResponse(false, "Organisation Not Found", null);
+                return new SignupResponse(false, "Organisation Not Found", null, null);
             }
             UserEntity existing = userRepository.findByMailId(entity.mailId());
             if (existing != null) {
-                return new SignupResponse(false, "User Already Exists", null);
+                return new SignupResponse(false, "User Already Exists", null, null);
             }
             UserEntity user = new UserEntity();
             user.setMailId(entity.mailId());
@@ -44,9 +44,9 @@ public class RegistrationService {
             user.setPassword(hashedPassword);
             userRepository.save(user);
             String token = jwtService.generateToken(user);
-            return new SignupResponse(true, "User Created Successfully", token);
+            return new SignupResponse(true, "User Created Successfully", token, user);
         } catch (Exception e) {
-            return new SignupResponse(false, "An error occurred during registration", null);
+            return new SignupResponse(false, "An error occurred during registration", null, null);
         }
     }
 }

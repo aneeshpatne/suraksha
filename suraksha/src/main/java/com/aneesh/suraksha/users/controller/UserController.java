@@ -65,7 +65,8 @@ public class UserController {
     }
 
     @PostMapping("/api/v1/auth/token/register")
-    public ResponseEntity<SignupResponse> createUser(@RequestBody SignupRequest entity, HttpServletResponse response) {
+    public ResponseEntity<SignupResponse> createUser(@RequestBody SignupRequest entity, HttpServletResponse response,
+            HttpServletRequest request) {
         SignupResponse res = registrationService.OnBoard(entity);
         if (res.status()) {
             Cookie cookie = new Cookie("jwt", res.token());
@@ -74,6 +75,26 @@ public class UserController {
             cookie.setPath("/");
             cookie.setMaxAge(60 * 60);
             response.addCookie(cookie);
+
+            String ip = clientIPAddress.getIP(request);
+            String userAgent = request.getHeader("User-Agent");
+
+            RefreshTokenServiceRequest tokenReq = new RefreshTokenServiceRequest(res.user(), ip, userAgent);
+            RefreshTokenServiceResponse tokenRes = refreshTokenService.generate(tokenReq);
+
+            Cookie refreshCookie = new Cookie("refresh_token", tokenRes.token());
+            refreshCookie.setHttpOnly(true);
+            refreshCookie.setSecure(true);
+            refreshCookie.setPath("/");
+            refreshCookie.setMaxAge(60 * 60 * 24 * 7); // 7 days
+            response.addCookie(refreshCookie);
+
+            Cookie refreshIdCookie = new Cookie("refresh_token_id", tokenRes.id().toString());
+            refreshIdCookie.setHttpOnly(true);
+            refreshIdCookie.setSecure(true);
+            refreshIdCookie.setPath("/");
+            refreshIdCookie.setMaxAge(60 * 60 * 24 * 7); // 7 days
+            response.addCookie(refreshIdCookie);
         }
         return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.FORBIDDEN).body(res);
     }
