@@ -28,21 +28,25 @@ public class RegistrationService {
     }
 
     public SignupResponse OnBoard(SignupRequest entity) {
-        Organisations organisation = organisationsRepository.findById(entity.organisationId()).orElse(null);
-        if (organisation == null) {
-            return new SignupResponse(false, "Organisation Not Found");
+        try {
+            Organisations organisation = organisationsRepository.findById(entity.organisationId()).orElse(null);
+            if (organisation == null) {
+                return new SignupResponse(false, "Organisation Not Found", null);
+            }
+            UserEntity existing = userRepository.findByMailId(entity.mailId());
+            if (existing != null) {
+                return new SignupResponse(false, "User Already Exists", null);
+            }
+            UserEntity user = new UserEntity();
+            user.setMailId(entity.mailId());
+            user.setOrganisations(organisation);
+            String hashedPassword = passwordEncoder.encode(entity.password());
+            user.setPassword(hashedPassword);
+            userRepository.save(user);
+            String token = jwtService.generateToken(user);
+            return new SignupResponse(true, "User Created Successfully", token);
+        } catch (Exception e) {
+            return new SignupResponse(false, "An error occurred during registration", null);
         }
-        UserEntity existing = userRepository.findByMailId(entity.mailId());
-        if (existing != null) {
-            return new SignupResponse(false, "User Already Exists");
-        }
-        UserEntity user = new UserEntity();
-        user.setMailId(entity.mailId());
-        user.setOrganisations(organisation);
-        String hashedPassword = passwordEncoder.encode(entity.password());
-        user.setPassword(hashedPassword);
-        userRepository.save(user);
-        // String accessToken = jwtService.generateToken(user);
-        return new SignupResponse(true, "User Created Successfully");
     }
 }
