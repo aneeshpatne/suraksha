@@ -15,8 +15,12 @@ public class RefreshTokenService {
 
     private final AppSecretConfig appSecretConfig;
 
-    public RefreshTokenService(AppSecretConfig appSecretConfig) {
+    private final com.aneesh.suraksha.users.model.RefreshTokenRepository refreshTokenRepository;
+
+    public RefreshTokenService(AppSecretConfig appSecretConfig,
+            com.aneesh.suraksha.users.model.RefreshTokenRepository refreshTokenRepository) {
         this.appSecretConfig = appSecretConfig;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
@@ -47,7 +51,21 @@ public class RefreshTokenService {
     }
 
     public RefreshTokenServiceResponse generate(RefreshTokenServiceRequest request) {
+        String token = IssueRefreshToken();
+        String hashedToken = hashToken(token);
 
+        com.aneesh.suraksha.users.model.RefreshToken refreshToken = new com.aneesh.suraksha.users.model.RefreshToken();
+        refreshToken.setUser(request.user());
+        refreshToken.setToken(hashedToken);
+        refreshToken.setIp(request.ip());
+        refreshToken.setUserAgent(request.userAgent());
+        refreshToken.setRevoked(false);
+        // Set expires at to 7 days from now
+        refreshToken.setExpiresAt(new java.sql.Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 7));
+
+        refreshToken = refreshTokenRepository.save(refreshToken);
+
+        return new RefreshTokenServiceResponse(token, refreshToken.getId());
     }
 
 }

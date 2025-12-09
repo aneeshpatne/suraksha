@@ -5,6 +5,9 @@ import com.aneesh.suraksha.users.service.LoginService;
 import com.aneesh.suraksha.users.service.OnboardRequest;
 import com.aneesh.suraksha.users.service.OnboardResponse;
 import com.aneesh.suraksha.users.service.OrganisationOnboard;
+import com.aneesh.suraksha.users.service.RefreshTokenService;
+import com.aneesh.suraksha.users.service.RefreshTokenServiceRequest;
+import com.aneesh.suraksha.users.service.RefreshTokenServiceResponse;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,16 +48,20 @@ public class UserController {
 
     private final OrganisationOnboard organisationOnboard;
 
+    private final RefreshTokenService refreshTokenService;
+
     public UserController(UserRepository userRepository, RegistrationService registrationService,
             LoginService loginService,
             OrganisationsRepository organisationsRepository, OrganisationOnboard organisationOnboard,
-            ClientIPAddress clientIPAddress) {
+            ClientIPAddress clientIPAddress,
+            RefreshTokenService refreshTokenService) {
         this.userRepository = userRepository;
         this.registrationService = registrationService;
         this.loginService = loginService;
         this.organisationsRepository = organisationsRepository;
         this.organisationOnboard = organisationOnboard;
         this.clientIPAddress = clientIPAddress;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @PostMapping("/api/v1/auth/token/register")
@@ -91,6 +98,23 @@ public class UserController {
             String ip = clientIPAddress.getIP(request);
             String userAgent = request.getHeader("User-Agent");
 
+            RefreshTokenServiceRequest tokenReq = new RefreshTokenServiceRequest(
+                    res.user(), ip, userAgent);
+            RefreshTokenServiceResponse tokenRes = refreshTokenService.generate(tokenReq);
+
+            Cookie refreshCookie = new Cookie("refresh_token", tokenRes.token());
+            refreshCookie.setHttpOnly(true);
+            refreshCookie.setSecure(true);
+            refreshCookie.setPath("/");
+            refreshCookie.setMaxAge(60 * 60 * 24 * 7); // 7 days
+            response.addCookie(refreshCookie);
+
+            Cookie refreshIdCookie = new Cookie("refresh_token_id", tokenRes.id().toString());
+            refreshIdCookie.setHttpOnly(true);
+            refreshIdCookie.setSecure(true);
+            refreshIdCookie.setPath("/");
+            refreshIdCookie.setMaxAge(60 * 60 * 24 * 7); // 7 days
+            response.addCookie(refreshIdCookie);
         }
 
         return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED)

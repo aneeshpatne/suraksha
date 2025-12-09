@@ -12,7 +12,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "refresh-tokens")
+@Table(name = "refresh-tokens", indexes = {
+        @jakarta.persistence.Index(name = "index_id", columnList = "id"),
+        @jakarta.persistence.Index(name = "index_token", columnList = "token")
+})
 public class RefreshToken {
     @Id
     @GeneratedValue
