@@ -17,7 +17,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-
+import com.aneesh.suraksha.users.component.ClientIPAddress;
 import com.aneesh.suraksha.users.controller.Login.LoginRequest;
 import com.aneesh.suraksha.users.controller.Login.LoginResponse;
 import com.aneesh.suraksha.users.controller.Signup.SignupRequest;
@@ -33,6 +33,8 @@ import java.util.List;
 @RestController
 public class UserController {
 
+    private final ClientIPAddress clientIPAddress;
+
     private final OrganisationsRepository organisationsRepository;
 
     private final LoginService loginService;
@@ -45,12 +47,14 @@ public class UserController {
 
     public UserController(UserRepository userRepository, RegistrationService registrationService,
             LoginService loginService,
-            OrganisationsRepository organisationsRepository, OrganisationOnboard organisationOnboard) {
+            OrganisationsRepository organisationsRepository, OrganisationOnboard organisationOnboard,
+            ClientIPAddress clientIPAddress) {
         this.userRepository = userRepository;
         this.registrationService = registrationService;
         this.loginService = loginService;
         this.organisationsRepository = organisationsRepository;
         this.organisationOnboard = organisationOnboard;
+        this.clientIPAddress = clientIPAddress;
     }
 
     @PostMapping("/api/v1/auth/token/register")
@@ -85,6 +89,8 @@ public class UserController {
             cookie.setMaxAge(60 * 60);
             response.addCookie(cookie);
         }
+        String ip = clientIPAddress.getIP(request);
+        String userAgent = request.getHeader("User-Agent");
         return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED)
                 .body(new LoginResponse(res.status(), res.message()));
     }
