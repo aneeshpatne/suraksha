@@ -33,8 +33,9 @@ public class JwksController {
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encoded);
             RSAPublicKey rsaPublicKey = (RSAPublicKey) keyFactory.generatePublic(keySpec);
-            String n = Base64.getUrlEncoder().encodeToString(rsaPublicKey.getModulus().toByteArray());
-            String e = Base64.getUrlEncoder().encodeToString(rsaPublicKey.getPublicExponent().toByteArray());
+            String n = Base64.getUrlEncoder().withoutPadding().encodeToString(rsaPublicKey.getModulus().toByteArray());
+            String e = Base64.getUrlEncoder().withoutPadding()
+                    .encodeToString(rsaPublicKey.getPublicExponent().toByteArray());
             Map<String, Object> jwk = new HashMap<>();
             jwk.put("kty", "RSA");
             jwk.put("use", "sig");
