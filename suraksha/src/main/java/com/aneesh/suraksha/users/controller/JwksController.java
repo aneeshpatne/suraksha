@@ -29,29 +29,22 @@ public class JwksController {
                     .replace("-----BEGIN PUBLIC KEY-----", "")
                     .replace("-----END PUBLIC KEY-----", "")
                     .replaceAll("\\s", "");
-
             byte[] encoded = Base64.getDecoder().decode(publicKeyPEM);
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encoded);
-            RSAPublicKey publicKey = (RSAPublicKey) keyFactory.generatePublic(keySpec);
-
-            // Convert modulus and exponent to Base64URL
-            String n = Base64.getUrlEncoder().withoutPadding()
-                    .encodeToString(publicKey.getModulus().toByteArray());
-            String e = Base64.getUrlEncoder().withoutPadding()
-                    .encodeToString(publicKey.getPublicExponent().toByteArray());
-
+            RSAPublicKey rsaPublicKey = (RSAPublicKey) keyFactory.generatePublic(keySpec);
+            String n = Base64.getUrlEncoder().encodeToString(rsaPublicKey.getModulus().toByteArray());
+            String e = Base64.getUrlEncoder().encodeToString(rsaPublicKey.getPublicExponent().toByteArray());
             Map<String, Object> jwk = new HashMap<>();
             jwk.put("kty", "RSA");
             jwk.put("use", "sig");
             jwk.put("alg", "RS256");
             jwk.put("n", n);
             jwk.put("e", e);
-
             Map<String, Object> response = new HashMap<>();
             response.put("keys", List.of(jwk));
-
             return ResponseEntity.ok(response);
+
         } catch (Exception ex) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", "Failed to generate JWKS");
