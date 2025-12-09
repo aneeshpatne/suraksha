@@ -1,6 +1,24 @@
 # Suraksha 🛡️
 
-A production-ready, multi-tenant authentication service built with Spring Boot 4.0. Suraksha provides secure JWT-based authentication with RS256 signing, refresh token rotation, organization management, and JWKS endpoint for token verification.
+![Java](https://img.shields.io/badge/Java-21-orange)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0-green)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+
+A production-ready, multi-tenant authentication service built with Spring Boot. Suraksha provides secure JWT-based authentication with RS256 signing, refresh token rotation, organization management, and JWKS endpoint for token verification.
+
+## Table of Contents
+
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [API Endpoints](#api-endpoints)
+- [JWT Token Claims](#jwt-token-claims)
+- [Getting Started](#getting-started)
+- [Security Features](#security-features)
+- [Database Schema](#database-schema)
+- [Development](#development)
+- [Troubleshooting](#troubleshooting)
 
 ## Features
 
@@ -293,9 +311,18 @@ cd suraksha
 ./mvnw test
 ```
 
-## License
+## Troubleshooting
 
-MIT
+### Database Connection Refused
+
+- Ensure the Docker container is running: `docker ps`
+- Check if port `5433` is available.
+- Verify credentials in `application.properties`.
+
+### Key Generation Errors
+
+- Ensure `openssl` is installed.
+- Verify the keys are correctly copied to `application.properties` (remove newlines if necessary, though Spring Boot handles them).
 
 ## Author
 
