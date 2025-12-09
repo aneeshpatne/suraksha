@@ -30,20 +30,20 @@ public class LoginService {
         try {
             UserEntity user = userRepository.findByMailId(request.mailId());
             if (user == null) {
-                return new LoginResult(false, "Invalid credentials", null);
+                return new LoginResult(false, "Invalid credentials", null, null);
             }
             if (user.getOrganisations() == null || !user.getOrganisations().getId().equals(request.organisationId())) {
-                return new LoginResult(false, "Invalid credentials", null);
+                return new LoginResult(false, "Invalid credentials", null, null);
             }
             boolean match = passwordEncoder.matches(request.password(), user.getPassword());
             if (!match) {
-                return new LoginResult(false, "Invalid credentials", null);
+                return new LoginResult(false, "Invalid credentials", null, null);
             }
             String token = jwtService.generateToken(user);
-            return new LoginResult(true, "Success", token);
+            return new LoginResult(true, "Success", token, user);
         } catch (Exception e) {
             logger.error("Error during login for user: {}", request.mailId(), e);
-            return new LoginResult(false, "Invalid credentials", null);
+            return new LoginResult(false, "Invalid credentials", null, null);
         }
     }
 }

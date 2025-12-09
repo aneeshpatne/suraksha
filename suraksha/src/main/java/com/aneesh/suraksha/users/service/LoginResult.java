@@ -1,4 +1,6 @@
 package com.aneesh.suraksha.users.service;
 
-public record LoginResult(Boolean status, String message, String token) {
+import com.aneesh.suraksha.users.model.UserEntity;
+
+public record LoginResult(Boolean status, String message, String token, UserEntity user) {
 }

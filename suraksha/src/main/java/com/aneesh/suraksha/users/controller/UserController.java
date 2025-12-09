@@ -88,9 +88,10 @@ public class UserController {
             cookie.setPath("/");
             cookie.setMaxAge(60 * 60);
             response.addCookie(cookie);
+            String ip = clientIPAddress.getIP(request);
+            String userAgent = request.getHeader("User-Agent");
         }
-        String ip = clientIPAddress.getIP(request);
-        String userAgent = request.getHeader("User-Agent");
+
         return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED)
                 .body(new LoginResponse(res.status(), res.message()));
     }
