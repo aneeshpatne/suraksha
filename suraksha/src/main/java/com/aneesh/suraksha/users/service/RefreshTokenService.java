@@ -45,6 +45,9 @@ public class RefreshTokenService {
             throw new RuntimeException("Failed to hash token");
         }
     }
-    public 
+
+    public RefreshTokenServiceResponse generate(RefreshTokenServiceRequest request) {
+
+    }
 
 }
