@@ -1,8 +1,5 @@
 package com.aneesh.suraksha.config;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,13 +16,17 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue emailQueue() {
-        return new Queue(EMAIL_QUEUE, true);
+    public org.springframework.amqp.support.converter.MessageConverter converter() {
+        return new org.springframework.amqp.support.converter.Jackson2JsonMessageConverter();
     }
 
     @Bean
-    public Binding emailBinding(Queue emailQueue, TopicExchange emailExchange) {
-        return BindingBuilder.bind(emailQueue).to(emailExchange).with(EMAIL_ROUTING_KEY);
+    public org.springframework.amqp.rabbit.core.RabbitTemplate amqpTemplate(
+            org.springframework.amqp.rabbit.connection.ConnectionFactory connectionFactory) {
+        final org.springframework.amqp.rabbit.core.RabbitTemplate rabbitTemplate = new org.springframework.amqp.rabbit.core.RabbitTemplate(
+                connectionFactory);
+        rabbitTemplate.setMessageConverter(converter());
+        return rabbitTemplate;
     }
 
 }

@@ -1,27 +1,24 @@
 package com.aneesh.suraksha.users.service;
 
+import com.aneesh.suraksha.config.RabbitMQConfig;
+import com.aneesh.suraksha.dto.MailDTO;
 import java.security.SecureRandom;
 import java.util.concurrent.TimeUnit;
-
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
 public class OtpService {
 
     private final StringRedisTemplate stringRedisTemplate;
-    private final JavaMailSender javaMailSender;
+    private final RabbitTemplate rabbitTemplate;
     private final SecureRandom secureRandom = new SecureRandom();
 
-    @Value("${spring.mail.properties.mail.from}")
-    private String fromEmail;
-
-    public OtpService(StringRedisTemplate stringRedisTemplate, JavaMailSender javaMailSender) {
+    public OtpService(StringRedisTemplate stringRedisTemplate,
+            RabbitTemplate rabbitTemplate) {
         this.stringRedisTemplate = stringRedisTemplate;
-        this.javaMailSender = javaMailSender;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     private String generateOtp() {
@@ -33,22 +30,13 @@ public class OtpService {
         String otp = generateOtp();
         String key = "otp:login:" + 1234;
         stringRedisTemplate.opsForValue().set(key, otp, 5, TimeUnit.MINUTES);
-        try {
-            sendEmail("aneeshpatne@gmail.com", "Suraksha Verification Code", generateEmailBody(otp));
-        } catch (jakarta.mail.MessagingException e) {
-            throw new RuntimeException("Failed to send email", e);
-        }
-    }
 
-    private void sendEmail(String to, String subject, String body) throws jakarta.mail.MessagingException {
-        jakarta.mail.internet.MimeMessage message = javaMailSender.createMimeMessage();
-        org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(
-                message, true, "UTF-8");
-        helper.setFrom(fromEmail);
-        helper.setTo(to);
-        helper.setSubject(subject);
-        helper.setText(body, true); // true indicates HTML
-        javaMailSender.send(message);
+        String emailBody = generateEmailBody(otp);
+        MailDTO mailDTO = new MailDTO("aneeshpatne@gmail.com",
+                "Suraksha Verification Code", emailBody);
+
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EMAIL_EXCHANGE,
+                RabbitMQConfig.EMAIL_ROUTING_KEY, mailDTO);
     }
 
     private String generateEmailBody(String otp) {
