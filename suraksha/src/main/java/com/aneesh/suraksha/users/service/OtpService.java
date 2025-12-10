@@ -33,7 +33,7 @@ public class OtpService {
 
         String emailBody = generateEmailBody(otp);
         MailDTO mailDTO = new MailDTO("aneeshpatne@gmail.com",
-                "Suraksha Verification Code", emailBody);
+                "Suraksha Verification Code " + otp, emailBody);
 
         rabbitTemplate.convertAndSend(RabbitMQConfig.EMAIL_EXCHANGE,
                 RabbitMQConfig.EMAIL_ROUTING_KEY, mailDTO);
@@ -57,15 +57,9 @@ public class OtpService {
                                         <td style="padding: 48px 40px; text-align: center;">
                                             <div style="margin-bottom: 32px;">
                                                 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M24 4L6 12V22C6 33.1 13.7 43.5 24 46C34.3 43.5 42 33.1 42 22V12L24 4Z" fill="url(#shield_grad)" stroke="#333333" stroke-width="1"/>
-                                                    <path d="M20 24L23 27L28 20" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                                    <defs>
-                                                        <linearGradient id="shield_grad" x1="6" y1="4" x2="42" y2="46" gradientUnits="userSpaceOnUse">
-                                                            <stop offset="0%%" stop-color="#222222"/>
-                                                            <stop offset="100%%" stop-color="#0a0a0a"/>
-                                                        </linearGradient>
-                                                    </defs>
-                                                </svg>
+                                        <path d="M24 4L6 12V22C6 33.1 13.7 43.5 24 46C34.3 43.5 42 33.1 42 22V12L24 4Z" fill="#222222" stroke="#333333" stroke-width="1"/>
+                                        <path d="M20 24L23 27L28 20" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
                                             </div>
                                             <h1 style="margin: 0 0 8px 0; font-size: 20px; font-weight: 600; color: #ffffff; letter-spacing: -0.5px;">
                                                 Verification Code
@@ -77,23 +71,23 @@ public class OtpService {
                                                 <span style="font-size: 42px; font-weight: 700; color: #ffffff; letter-spacing: 12px; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;">%s</span>
                                             </div>
                                             <p style="margin: 0; font-size: 13px; color: #555555;">
-                                                Expires in <span style="color: #888888; font-weight: 500;">5 minutes</span>
-                                            </p>
-                                        </td>
-                                    </tr>
-                                </table>
-                                <table role="presentation" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 420px; margin-top: 32px;">
-                                    <tr>
-                                        <td style="text-align: center;">
-                                            <p style="margin: 0 0 8px 0; font-size: 13px; color: #444444;">
-                                                Didn't request this? <span style="color: #666666;">Secure your account now.</span>
-                                            </p>
-                                            <p style="margin: 0; font-size: 12px; color: #333333;">
-                                                &copy; 2025 Suraksha
-                                            </p>
-                                        </td>
-                                    </tr>
-                                </table>
+                                    Expires in <span style="color: #888888; font-weight: 500;">5 minutes</span>
+                                </p>
+                                <p style="margin: 24px 0 0 0; font-size: 13px; color: #444444;">
+                                    Didn't request this? <span style="color: #666666;">Secure your account now.</span>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                    <table role="presentation" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 420px; margin-top: 24px;">
+                        <tr>
+                            <td style="text-align: center;">
+                                <p style="margin: 0; font-size: 12px; color: #333333;">
+                                    &copy; 2025 Suraksha
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
                             </td>
                         </tr>
                     </table>
