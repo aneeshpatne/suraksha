@@ -52,121 +52,66 @@ public class OtpService {
     }
 
     private String generateEmailBody(String otp) {
-        return """
+        String template = """
                 <!DOCTYPE html>
                 <html>
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Suraksha Verification</title>
-                    <style>
-                        body {
-                            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-                            background-color: #f4f4f7;
-                            margin: 0;
-                            padding: 0;
-                            -webkit-text-size-adjust: none;
-                            color: #51545E;
-                        }
-                        .email-wrapper {
-                            width: 100%;
-                            background-color: #f4f4f7;
-                            padding: 40px 0;
-                        }
-                        .email-content {
-                            max-width: 500px;
-                            margin: 0 auto;
-                            background-color: #ffffff;
-                            border-radius: 8px;
-                            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Soft premium shadow */
-                            overflow: hidden;
-                        }
-                        .email-header {
-                            background-color: #000000; /* Sleek Dark Header */
-                            padding: 30px;
-                            text-align: center;
-                        }
-                        .email-header h1 {
-                            color: #ffffff;
-                            margin: 0;
-                            font-size: 24px;
-                            font-weight: 600;
-                            letter-spacing: 1px;
-                            text-transform: uppercase;
-                        }
-                        .email-body {
-                            padding: 40px 40px;
-                            text-align: left;
-                        }
-                        .email-body p {
-                            font-size: 16px;
-                            line-height: 1.6;
-                            color: #333333;
-                            margin-bottom: 20px;
-                        }
-                        .otp-container {
-                            margin: 30px 0;
-                            text-align: center;
-                        }
-                        .otp-code {
-                            font-size: 36px;
-                            font-weight: 700;
-                            color: #000000;
-                            letter-spacing: 8px;
-                            padding: 15px 30px;
-                            background-color: #f8f9fa;
-                            border: 1px solid #e9ecef;
-                            border-radius: 6px;
-                            display: inline-block;
-                        }
-                        .email-footer {
-                            text-align: center;
-                            padding: 20px;
-                            font-size: 12px;
-                            color: #6b6e76;
-                            background-color: #f4f4f7;
-                        }
-                        .email-footer p {
-                            margin: 5px 0;
-                        }
-                        .highlight {
-                            color: #000000;
-                            font-weight: 600;
-                        }
-                    </style>
+                    <title>Verification Code</title>
                 </head>
-                <body>
-                    <div class="email-wrapper">
-                        <div class="email-content">
-                            <div class="email-header">
-                                <h1>Suraksha</h1>
-                            </div>
-                            <div class="email-body">
-                                <p>Hello,</p>
-                                <p>We received a request to access your account. To confirm your identity, please use the verification code below:</p>
-
-                                <div class="otp-container">
-                                    <span class="otp-code">"""
-                + otp
-                + """
-                                            </span>
-                                        </div>
-
-                                        <p>This code will expire in <strong>5 minutes</strong>. If you did not request this code, reset your passwords immediately.</p>
-
-                                        <p style="margin-top: 30px; font-size: 14px; color: #666;">
-                                            Best regards,<br>
-                                            The Suraksha Security Team
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="email-footer">
-                                    <p>&copy; 2025 Suraksha. All rights reserved.</p>
-                                    <p>Secure. Private. Trusted.</p>
-                                </div>
-                            </div>
-                        </body>
-                        </html>
-                        """;
+                <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0a0a0a;">
+                    <table role="presentation" width="100%%" cellspacing="0" cellpadding="0" border="0" style="background-color: #0a0a0a;">
+                        <tr>
+                            <td align="center" style="padding: 60px 20px;">
+                                <table role="presentation" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 420px; background-color: #111111; border-radius: 16px; border: 1px solid #222222;">
+                                    <tr>
+                                        <td style="padding: 48px 40px; text-align: center;">
+                                            <div style="margin-bottom: 32px;">
+                                                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M24 4L6 12V22C6 33.1 13.7 43.5 24 46C34.3 43.5 42 33.1 42 22V12L24 4Z" fill="url(#shield_grad)" stroke="#333333" stroke-width="1"/>
+                                                    <path d="M20 24L23 27L28 20" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    <defs>
+                                                        <linearGradient id="shield_grad" x1="6" y1="4" x2="42" y2="46" gradientUnits="userSpaceOnUse">
+                                                            <stop offset="0%%" stop-color="#222222"/>
+                                                            <stop offset="100%%" stop-color="#0a0a0a"/>
+                                                        </linearGradient>
+                                                    </defs>
+                                                </svg>
+                                            </div>
+                                            <h1 style="margin: 0 0 8px 0; font-size: 20px; font-weight: 600; color: #ffffff; letter-spacing: -0.5px;">
+                                                Verification Code
+                                            </h1>
+                                            <p style="margin: 0 0 40px 0; font-size: 14px; color: #666666; line-height: 1.5;">
+                                                Enter this code to continue
+                                            </p>
+                                            <div style="background-color: #0a0a0a; border: 1px solid #333333; border-radius: 12px; padding: 24px 32px; margin-bottom: 40px;">
+                                                <span style="font-size: 42px; font-weight: 700; color: #ffffff; letter-spacing: 12px; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;">%s</span>
+                                            </div>
+                                            <p style="margin: 0; font-size: 13px; color: #555555;">
+                                                Expires in <span style="color: #888888; font-weight: 500;">5 minutes</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table role="presentation" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 420px; margin-top: 32px;">
+                                    <tr>
+                                        <td style="text-align: center;">
+                                            <p style="margin: 0 0 8px 0; font-size: 13px; color: #444444;">
+                                                Didn't request this? <span style="color: #666666;">Secure your account now.</span>
+                                            </p>
+                                            <p style="margin: 0; font-size: 12px; color: #333333;">
+                                                &copy; 2025 Suraksha
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </body>
+                </html>
+                """;
+        return String.format(template, otp);
     }
 }
