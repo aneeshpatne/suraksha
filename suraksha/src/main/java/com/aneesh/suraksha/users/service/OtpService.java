@@ -143,7 +143,7 @@ public class OtpService {
                             </div>
                             <div class="email-body">
                                 <p>Hello,</p>
-                                <p>We received a request to access your <span class="highlight">Suraksha</span> account. To confirm your identity, please use the verification code below:</p>
+                                <p>We received a request to access your account. To confirm your identity, please use the verification code below:</p>
 
                                 <div class="otp-container">
                                     <span class="otp-code">"""
@@ -152,7 +152,7 @@ public class OtpService {
                                             </span>
                                         </div>
 
-                                        <p>This code will expire in <strong>5 minutes</strong>. If you did not request this code, please ignore this email or contact support immediately.</p>
+                                        <p>This code will expire in <strong>5 minutes</strong>. If you did not request this code, reset your passwords immediately.</p>
 
                                         <p style="margin-top: 30px; font-size: 14px; color: #666;">
                                             Best regards,<br>
