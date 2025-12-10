@@ -1,5 +1,8 @@
 package com.aneesh.suraksha.config;
 
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +16,16 @@ public class RabbitMQConfig {
     @Bean
     public TopicExchange emailExchange() {
         return new TopicExchange(EMAIL_EXCHANGE);
+    }
+
+    @Bean
+    public Queue emailQueue() {
+        return new Queue(EMAIL_QUEUE, true);
+    }
+
+    @Bean
+    public Binding binding(Queue queue, TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(EMAIL_ROUTING_KEY);
     }
 
     @Bean
