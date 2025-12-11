@@ -46,48 +46,62 @@ public class OtpService {
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <meta name="color-scheme" content="light dark">
+                    <meta name="supported-color-schemes" content="light dark">
                     <title>Verification Code</title>
+                    <style>
+                        :root {
+                            color-scheme: light dark;
+                            supported-color-schemes: light dark;
+                        }
+                        @media (prefers-color-scheme: dark) {
+                            .body-bg { background-color: #09090b !important; }
+                            .content-box { background-color: #18181b !important; border-color: #27272a !important; }
+                            .text-primary { color: #fafafa !important; }
+                            .text-secondary { color: #a1a1aa !important; }
+                            .code-box { background-color: #09090b !important; border-color: #27272a !important; }
+                            .code-text { color: #fafafa !important; }
+                            .footer-text { color: #71717a !important; }
+                        }
+                    </style>
                 </head>
-                <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0a0a0a;">
-                    <table role="presentation" width="100%%" cellspacing="0" cellpadding="0" border="0" style="background-color: #0a0a0a;">
+                <body class="body-bg" style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f4f5;">
+                    <table role="presentation" width="100%%" cellspacing="0" cellpadding="0" border="0" class="body-bg" style="background-color: #f4f4f5; width: 100%%;">
                         <tr>
-                            <td align="center" style="padding: 60px 20px;">
-                                <table role="presentation" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 420px; background-color: #111111; border-radius: 16px; border: 1px solid #222222;">
+                            <td align="center" style="padding: 40px 20px;">
+                                <table role="presentation" width="100%%" cellspacing="0" cellpadding="0" border="0" class="content-box" style="max-width: 400px; background-color: #ffffff; border-radius: 16px; border: 1px solid #e4e4e7; margin: 0 auto;">
                                     <tr>
-                                        <td style="padding: 48px 40px; text-align: center;">
-                                            <div style="margin-bottom: 32px;">
-                                                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M24 4L6 12V22C6 33.1 13.7 43.5 24 46C34.3 43.5 42 33.1 42 22V12L24 4Z" fill="#222222" stroke="#333333" stroke-width="1"/>
-                                        <path d="M20 24L23 27L28 20" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
+                                        <td style="padding: 40px 32px; text-align: center;">
+                                            <div style="margin-bottom: 24px;">
+                                                <img src="https://ui-avatars.com/api/?name=S&background=18181b&color=fff&size=64&rounded=true&bold=true" alt="Suraksha" width="48" height="48" style="display: inline-block; border-radius: 12px;">
                                             </div>
-                                            <h1 style="margin: 0 0 8px 0; font-size: 20px; font-weight: 600; color: #ffffff; letter-spacing: -0.5px;">
+                                            <h1 class="text-primary" style="margin: 0 0 8px 0; font-size: 20px; font-weight: 600; color: #18181b; letter-spacing: -0.5px;">
                                                 Verification Code
                                             </h1>
-                                            <p style="margin: 0 0 40px 0; font-size: 14px; color: #666666; line-height: 1.5;">
-                                                Enter this code to continue
+                                            <p class="text-secondary" style="margin: 0 0 32px 0; font-size: 14px; color: #71717a; line-height: 1.5;">
+                                                Enter this code to verify your identity.
                                             </p>
-                                            <div style="background-color: #0a0a0a; border: 1px solid #333333; border-radius: 12px; padding: 24px 32px; margin-bottom: 40px;">
-                                                <span style="font-size: 42px; font-weight: 700; color: #ffffff; letter-spacing: 12px; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;">%s</span>
+                                            <div class="code-box" style="background-color: #fafafa; border: 1px solid #e4e4e7; border-radius: 12px; padding: 20px; margin-bottom: 32px;">
+                                                <span class="code-text" style="font-size: 32px; font-weight: 700; color: #18181b; letter-spacing: 8px; font-family: monospace;">%s</span>
                                             </div>
-                                            <p style="margin: 0; font-size: 13px; color: #555555;">
-                                    Expires in <span style="color: #888888; font-weight: 500;">5 minutes</span>
-                                </p>
-                                <p style="margin: 24px 0 0 0; font-size: 13px; color: #444444;">
-                                    Didn't request this? <span style="color: #666666;">Secure your account now.</span>
-                                </p>
-                            </td>
-                        </tr>
-                    </table>
-                    <table role="presentation" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 420px; margin-top: 24px;">
-                        <tr>
-                            <td style="text-align: center;">
-                                <p style="margin: 0; font-size: 12px; color: #333333;">
-                                    &copy; 2025 Suraksha
-                                </p>
-                            </td>
-                        </tr>
-                    </table>
+                                            <p class="text-secondary" style="margin: 0; font-size: 13px; color: #71717a;">
+                                                Expires in <span style="font-weight: 500;">5 minutes</span>
+                                            </p>
+                                            <p class="text-secondary" style="margin: 24px 0 0 0; font-size: 13px; color: #71717a;">
+                                                Didn't request this? <span style="text-decoration: underline; cursor: pointer;">Secure your account.</span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table role="presentation" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 400px; margin-top: 24px;">
+                                    <tr>
+                                        <td style="text-align: center;">
+                                            <p class="footer-text" style="margin: 0; font-size: 12px; color: #a1a1aa;">
+                                                &copy; 2025 Suraksha Security
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
                             </td>
                         </tr>
                     </table>
