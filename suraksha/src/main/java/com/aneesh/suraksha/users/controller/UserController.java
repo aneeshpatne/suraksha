@@ -159,12 +159,16 @@ public class UserController {
     }
 
     @GetMapping("/api/v1/verify-magic-url")
-    public String verifyMagicURL(@ModelAttribute VerifyMagicLinkRequest param) {
+    public ResponseEntity<?> verifyMagicURL(@ModelAttribute VerifyMagicLinkRequest param) {
         MagicLinkVerificationResult res = magicUrlService.verifySendMagicUrl(param.token());
+
         if (!res.status()) {
-            return "false";
+            return ResponseEntity.badRequest().body("invalid");
         }
-        return res.userId().toString();
+
+        return ResponseEntity.status(302)
+                .header("Location", "/app?userId=" + res.userId())
+                .build();
     }
 
     @GetMapping("/api/v1/organisations")

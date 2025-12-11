@@ -88,6 +88,8 @@ public class MagicUrlService {
                         @media (prefers-color-scheme: dark) {
                             .body-bg { background-color: #09090b !important; }
                             .content-box { background-color: #18181b !important; border-color: #27272a !important; }
+                            .logo-light { display: none !important; }
+                            .logo-dark { display: block !important; }
                             .text-primary { color: #fafafa !important; }
                             .text-secondary { color: #a1a1aa !important; }
                             .btn-primary { background-color: #fafafa !important; color: #18181b !important; }
@@ -104,7 +106,8 @@ public class MagicUrlService {
                                 <table role="presentation" width="100%%" cellspacing="0" cellpadding="0" border="0" class="content-box" style="max-width: 400px; background-color: #ffffff; border-radius: 16px; border: 1px solid #e4e4e7; margin: 0 auto;">
                                     <tr>
                                         <td style="padding: 40px 32px; text-align: center;">
-                                            <img src="https://raw.githubusercontent.com/aneeshpatne/suraksha/refs/heads/main/assets/logo.png" alt="Suraksha" width="48" height="48" style="margin-bottom: 24px; width: 48px; height: 48px; border-radius: 12px; display: block; border: 0;">
+                                            <img src="https://raw.githubusercontent.com/aneeshpatne/suraksha/refs/heads/main/assets/logo_light_mode.png" class="logo-light" alt="Suraksha" width="48" height="48" style="margin: 0 auto 24px auto; width: 48px; height: 48px; border-radius: 12px; display: block; border: 0;">
+                                            <img src="https://raw.githubusercontent.com/aneeshpatne/suraksha/refs/heads/main/assets/logo_dark_mode.png" class="logo-dark" alt="Suraksha" width="48" height="48" style="display: none; margin: 0 auto 24px auto; width: 48px; height: 48px; border-radius: 12px; border: 0;">
                                             <h1 class="text-primary" style="margin: 0 0 8px 0; font-size: 20px; font-weight: 600; color: #18181b; letter-spacing: -0.5px;">
                                                 Magic Sign In
                                             </h1>
