@@ -19,12 +19,12 @@ import com.aneesh.suraksha.users.controller.Signup.SignupRequest;
 import com.aneesh.suraksha.users.controller.Signup.SignupResponse;
 import com.aneesh.suraksha.users.dto.MagicPostRequestDTO;
 import com.aneesh.suraksha.users.dto.MagicPostResponseDTO;
+import com.aneesh.suraksha.users.dto.MagicVerifyGETDTO;
 import com.aneesh.suraksha.users.dto.UserDTO;
 import com.aneesh.suraksha.users.model.Organisations;
 import com.aneesh.suraksha.users.model.OrganisationsRepository;
 import com.aneesh.suraksha.users.model.UserEntity;
 import com.aneesh.suraksha.users.model.UserRepository;
-import com.aneesh.suraksha.users.service.RegistrationService;
 
 import java.util.List;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -158,7 +158,7 @@ public class UserController {
     }
 
     @GetMapping("/api/v1/verify-magic-url")
-    public String verifyMagicURL(@RequestParam String param) {
+    public String verifyMagicURL(@RequestParam MagicVerifyGETDTO param) {
         return new String();
     }
 
