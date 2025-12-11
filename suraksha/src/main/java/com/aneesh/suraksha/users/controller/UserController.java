@@ -157,7 +157,7 @@ public class UserController {
 
     }
 
-    @GetMapping("/api/v1/verify")
+    @GetMapping("/api/v1/verify-magic-url")
     public String getMethodName(@RequestParam String param) {
         return new String();
     }
