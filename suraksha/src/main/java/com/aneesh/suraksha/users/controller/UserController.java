@@ -4,6 +4,7 @@ import com.aneesh.suraksha.users.service.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,17 +18,17 @@ import com.aneesh.suraksha.users.controller.Login.LoginRequest;
 import com.aneesh.suraksha.users.controller.Login.LoginResponse;
 import com.aneesh.suraksha.users.controller.Signup.SignupRequest;
 import com.aneesh.suraksha.users.controller.Signup.SignupResponse;
-import com.aneesh.suraksha.users.dto.MagicPostRequestDTO;
-import com.aneesh.suraksha.users.dto.MagicPostResponseDTO;
-import com.aneesh.suraksha.users.dto.MagicVerifyGETDTO;
+import com.aneesh.suraksha.users.dto.SendMagicLinkRequest;
+import com.aneesh.suraksha.users.dto.SendMagicLinkResponse;
+import com.aneesh.suraksha.users.dto.VerifyMagicLinkRequest;
 import com.aneesh.suraksha.users.dto.UserDTO;
+import com.aneesh.suraksha.users.dto.MagicLinkVerificationResult;
 import com.aneesh.suraksha.users.model.Organisations;
 import com.aneesh.suraksha.users.model.OrganisationsRepository;
 import com.aneesh.suraksha.users.model.UserEntity;
 import com.aneesh.suraksha.users.model.UserRepository;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 public class UserController {
@@ -149,17 +150,21 @@ public class UserController {
     }
 
     @PostMapping("/api/v1/magic-url")
-    public MagicPostResponseDTO magicURL(@RequestBody MagicPostRequestDTO entity) {
+    public SendMagicLinkResponse magicURL(@RequestBody SendMagicLinkRequest entity) {
         UserEntity user = userRepository.findByMailId(entity.mailId());
         magicUrlService.SendMagicUrl(user);
-        MagicPostResponseDTO res = new MagicPostResponseDTO(true);
+        SendMagicLinkResponse res = new SendMagicLinkResponse(true);
         return res;
 
     }
 
     @GetMapping("/api/v1/verify-magic-url")
-    public String verifyMagicURL(@RequestParam MagicVerifyGETDTO param) {
-        return new String();
+    public String verifyMagicURL(@ModelAttribute VerifyMagicLinkRequest param) {
+        MagicLinkVerificationResult res = magicUrlService.verifySendMagicUrl(param.token());
+        if (!res.status()) {
+            return "false";
+        }
+        return res.userId().toString();
     }
 
     @GetMapping("/api/v1/organisations")

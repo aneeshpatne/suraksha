@@ -11,8 +11,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.aneesh.suraksha.dto.MailDTO;
-import com.aneesh.suraksha.users.dto.MagicURLDTO;
-import com.aneesh.suraksha.users.dto.VerifySendMagicUrl;
+import com.aneesh.suraksha.users.dto.MagicLinkTokenPayload;
+import com.aneesh.suraksha.users.dto.MagicLinkVerificationResult;
 import com.aneesh.suraksha.users.model.UserEntity;
 import tools.jackson.databind.ObjectMapper;
 
@@ -42,11 +42,11 @@ public class MagicUrlService {
         try {
             String magicUrl = generateRandomMagicBytes();
             String key = "magic:" + magicUrl;
-            MagicURLDTO payload = new MagicURLDTO(user.getId(), System.currentTimeMillis());
+            MagicLinkTokenPayload payload = new MagicLinkTokenPayload(user.getId(), System.currentTimeMillis());
             String json = objectMapper.writeValueAsString(payload);
             stringRedisTemplate.opsForValue().set(key, json, Duration.ofMinutes(10));
 
-            String fullMagicLink = "https://auth.aneeshpatne.com/magic?token=" + magicUrl;
+            String fullMagicLink = "http://localhost:8080/api/v1/verify-magic-url?token=" + magicUrl;
             String emailBody = generateEmailBody(fullMagicLink);
 
             MailDTO mailDTO = new MailDTO("aneeshpatne@gmail.com",
@@ -60,14 +60,14 @@ public class MagicUrlService {
         }
     }
 
-    public VerifySendMagicUrl verifySendMagicUrl(String token) {
+    public MagicLinkVerificationResult verifySendMagicUrl(String token) {
         String json = stringRedisTemplate.opsForValue().get("magic:" + token);
         if (json == null) {
-            return new VerifySendMagicUrl(false, null);
+            return new MagicLinkVerificationResult(false, null);
         }
-        MagicURLDTO payload = objectMapper.readValue(json, MagicURLDTO.class);
+        MagicLinkTokenPayload payload = objectMapper.readValue(json, MagicLinkTokenPayload.class);
         stringRedisTemplate.delete("magic:" + token);
-        return new VerifySendMagicUrl(true, payload.userId());
+        return new MagicLinkVerificationResult(true, payload.userId());
     }
 
     private String generateEmailBody(String magicLink) {
@@ -104,8 +104,8 @@ public class MagicUrlService {
                                 <table role="presentation" width="100%%" cellspacing="0" cellpadding="0" border="0" class="content-box" style="max-width: 400px; background-color: #ffffff; border-radius: 16px; border: 1px solid #e4e4e7; margin: 0 auto;">
                                     <tr>
                                         <td style="padding: 40px 32px; text-align: center;">
-                                            <div style="margin-bottom: 24px;">
-                                                <img src="https://ui-avatars.com/api/?name=S&background=18181b&color=fff&size=64&rounded=true&bold=true" alt="Suraksha" width="48" height="48" style="display: inline-block; border-radius: 12px;">
+                                            <div style="margin-bottom: 24px; width: 48px; height: 48px; background-color: #18181b; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center;">
+                                                <span style="font-size: 24px; font-weight: bold; color: #ffffff;">S</span>
                                             </div>
                                             <h1 class="text-primary" style="margin: 0 0 8px 0; font-size: 20px; font-weight: 600; color: #18181b; letter-spacing: -0.5px;">
                                                 Magic Sign In

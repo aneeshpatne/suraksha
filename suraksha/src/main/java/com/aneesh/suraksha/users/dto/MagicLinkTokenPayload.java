@@ -2,6 +2,6 @@ package com.aneesh.suraksha.users.dto;
 
 import java.util.UUID;
 
-public record MagicURLDTO(UUID userId, long createdAt) {
+public record MagicLinkTokenPayload(UUID userId, long createdAt) {
 
 }
