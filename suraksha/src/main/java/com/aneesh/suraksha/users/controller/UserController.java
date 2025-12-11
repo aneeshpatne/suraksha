@@ -27,6 +27,7 @@ import com.aneesh.suraksha.users.model.UserRepository;
 import com.aneesh.suraksha.users.service.RegistrationService;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 public class UserController {
@@ -154,6 +155,11 @@ public class UserController {
         MagicPostResponseDTO res = new MagicPostResponseDTO(true);
         return res;
 
+    }
+
+    @GetMapping("/api/v1/verify")
+    public String getMethodName(@RequestParam String param) {
+        return new String();
     }
 
     @GetMapping("/api/v1/organisations")

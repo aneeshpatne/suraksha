@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.aneesh.suraksha.dto.MailDTO;
 import com.aneesh.suraksha.users.dto.MagicURLDTO;
 import com.aneesh.suraksha.users.model.UserEntity;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class MagicUrlService {
