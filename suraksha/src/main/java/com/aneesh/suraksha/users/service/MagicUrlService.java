@@ -34,7 +34,7 @@ public class MagicUrlService {
         String prefix = "magic_";
         byte[] randomBytes = new byte[32];
         secureRandom.nextBytes(randomBytes);
-        String randomPart = Base64.getUrlEncoder().encodeToString(randomBytes);
+        String randomPart = Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
         return prefix + randomPart;
     }
 
