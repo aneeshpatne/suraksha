@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.aneesh.suraksha.dto.MailDTO;
 import com.aneesh.suraksha.users.dto.MagicURLDTO;
+import com.aneesh.suraksha.users.dto.VerifySendMagicUrl;
 import com.aneesh.suraksha.users.model.UserEntity;
 import tools.jackson.databind.ObjectMapper;
 
@@ -57,6 +58,16 @@ public class MagicUrlService {
         } catch (Exception e) {
             throw new RuntimeException("Failed to generate magic URL", e);
         }
+    }
+
+    public VerifySendMagicUrl verifySendMagicUrl(String token) {
+        String json = stringRedisTemplate.opsForValue().get("magic:" + token);
+        if (json == null) {
+            return new VerifySendMagicUrl(false, null);
+        }
+        MagicURLDTO payload = objectMapper.readValue(json, MagicURLDTO.class);
+        stringRedisTemplate.delete("magic:" + token);
+        return new VerifySendMagicUrl(true, payload.userId());
     }
 
     private String generateEmailBody(String magicLink) {
