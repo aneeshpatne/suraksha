@@ -104,9 +104,7 @@ public class MagicUrlService {
                                 <table role="presentation" width="100%%" cellspacing="0" cellpadding="0" border="0" class="content-box" style="max-width: 400px; background-color: #ffffff; border-radius: 16px; border: 1px solid #e4e4e7; margin: 0 auto;">
                                     <tr>
                                         <td style="padding: 40px 32px; text-align: center;">
-                                            <div style="margin-bottom: 24px; width: 48px; height: 48px; background-color: #18181b; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center;">
-                                                <span style="font-size: 24px; font-weight: bold; color: #ffffff;">S</span>
-                                            </div>
+                                            <img src="https://raw.githubusercontent.com/aneeshpatne/suraksha/refs/heads/main/assets/logo.png" alt="Suraksha" width="48" height="48" style="margin-bottom: 24px; width: 48px; height: 48px; border-radius: 12px; display: block; border: 0;">
                                             <h1 class="text-primary" style="margin: 0 0 8px 0; font-size: 20px; font-weight: 600; color: #18181b; letter-spacing: -0.5px;">
                                                 Magic Sign In
                                             </h1>
