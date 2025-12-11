@@ -1,14 +1,6 @@
 package com.aneesh.suraksha.users.controller;
 
-import com.aneesh.suraksha.users.service.LoginResult;
-import com.aneesh.suraksha.users.service.LoginService;
-import com.aneesh.suraksha.users.service.OnboardRequest;
-import com.aneesh.suraksha.users.service.OnboardResponse;
-import com.aneesh.suraksha.users.service.OrganisationOnboard;
-import com.aneesh.suraksha.users.service.RefreshTokenService;
-import com.aneesh.suraksha.users.service.RefreshTokenServiceRequest;
-import com.aneesh.suraksha.users.service.RefreshTokenServiceResponse;
-
+import com.aneesh.suraksha.users.service.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,9 +17,12 @@ import com.aneesh.suraksha.users.controller.Login.LoginRequest;
 import com.aneesh.suraksha.users.controller.Login.LoginResponse;
 import com.aneesh.suraksha.users.controller.Signup.SignupRequest;
 import com.aneesh.suraksha.users.controller.Signup.SignupResponse;
+import com.aneesh.suraksha.users.dto.MagicPostRequestDTO;
+import com.aneesh.suraksha.users.dto.MagicPostResponseDTO;
 import com.aneesh.suraksha.users.dto.UserDTO;
 import com.aneesh.suraksha.users.model.Organisations;
 import com.aneesh.suraksha.users.model.OrganisationsRepository;
+import com.aneesh.suraksha.users.model.UserEntity;
 import com.aneesh.suraksha.users.model.UserRepository;
 import com.aneesh.suraksha.users.service.RegistrationService;
 
@@ -35,6 +30,8 @@ import java.util.List;
 
 @RestController
 public class UserController {
+
+    private final MagicUrlService magicUrlService;
 
     private final ClientIPAddress clientIPAddress;
 
@@ -54,7 +51,7 @@ public class UserController {
             LoginService loginService,
             OrganisationsRepository organisationsRepository, OrganisationOnboard organisationOnboard,
             ClientIPAddress clientIPAddress,
-            RefreshTokenService refreshTokenService) {
+            RefreshTokenService refreshTokenService, MagicUrlService magicUrlService) {
         this.userRepository = userRepository;
         this.registrationService = registrationService;
         this.loginService = loginService;
@@ -62,6 +59,7 @@ public class UserController {
         this.organisationOnboard = organisationOnboard;
         this.clientIPAddress = clientIPAddress;
         this.refreshTokenService = refreshTokenService;
+        this.magicUrlService = magicUrlService;
     }
 
     @PostMapping("/api/v1/auth/token/register")
@@ -145,6 +143,15 @@ public class UserController {
     @PostMapping("/api/v1/organisations")
     public OnboardResponse registerOrganisation(@RequestBody OnboardRequest entity) {
         OnboardResponse res = organisationOnboard.OnBoard(entity);
+        return res;
+
+    }
+
+    @PostMapping("/api/v1/magic-url")
+    public MagicPostResponseDTO magicURL(@RequestBody MagicPostRequestDTO entity) {
+        UserEntity user = userRepository.findByMailId(entity.mailId());
+        magicUrlService.SendMagicUrl(user);
+        MagicPostResponseDTO res = new MagicPostResponseDTO(true);
         return res;
 
     }
