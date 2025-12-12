@@ -4,7 +4,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.aneesh.suraksha.users.controller.Signup.SignupRequest;
-import com.aneesh.suraksha.users.controller.Signup.SignupResponse;
+import com.aneesh.suraksha.users.controller.Signup.SignupResult;
 import com.aneesh.suraksha.users.dto.UserMetaData;
 import com.aneesh.suraksha.users.model.UserEntity;
 import com.aneesh.suraksha.users.model.UserRepository;
@@ -32,15 +32,15 @@ public class RegistrationService {
         this.refreshTokenService = refreshTokenService;
     }
 
-    public SignupResponse OnBoard(SignupRequest entity, UserMetaData metaData) {
+    public SignupResult OnBoard(SignupRequest entity, UserMetaData metaData) {
         try {
             Organisations organisation = organisationsRepository.findById(entity.organisationId()).orElse(null);
             if (organisation == null) {
-                return new SignupResponse(false, "An error occurred during registration", null, null, null);
+                return new SignupResult(false, "An error occurred during registration", null, null, null);
             }
             UserEntity existing = userRepository.findByMailId(entity.mailId());
             if (existing != null) {
-                return new SignupResponse(false, "User Already Exists", null, null, null);
+                return new SignupResult(false, "User Already Exists", null, null, null);
             }
             UserEntity user = new UserEntity();
             user.setMailId(entity.mailId());
@@ -51,9 +51,9 @@ public class RegistrationService {
             String token = jwtService.generateToken(user);
             String refreshToken = refreshTokenService
                     .generate(new RefreshTokenServiceRequest(user, metaData.ip(), metaData.userAgent()));
-            return new SignupResponse(true, "User Created Successfully", token, refreshToken, user);
+            return new SignupResult(true, "User Created Successfully", token, refreshToken, user);
         } catch (Exception e) {
-            return new SignupResponse(false, "An error occurred during registration", null, null, null);
+            return new SignupResult(false, "An error occurred during registration", null, null, null);
         }
     }
 }
