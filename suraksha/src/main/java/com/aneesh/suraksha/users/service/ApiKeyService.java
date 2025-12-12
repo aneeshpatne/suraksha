@@ -1,4 +1,4 @@
-package com.aneesh.suraksha.users.component;
+package com.aneesh.suraksha.users.service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -7,16 +7,16 @@ import java.util.Base64;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.aneesh.suraksha.config.AppSecretConfig;
 
-@Component
-public class ApiKeyGenerator {
+@Service
+public class ApiKeyService {
 
     private final AppSecretConfig appSecretConfig;
 
-    public ApiKeyGenerator(AppSecretConfig appSecretConfig) {
+    public ApiKeyService(AppSecretConfig appSecretConfig) {
         this.appSecretConfig = appSecretConfig;
     }
 
