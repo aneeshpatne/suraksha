@@ -19,6 +19,7 @@ import com.aneesh.suraksha.users.component.ClientIPAddress;
 import com.aneesh.suraksha.users.controller.Login.LoginRequest;
 import com.aneesh.suraksha.users.controller.Login.LoginResponse;
 import com.aneesh.suraksha.users.controller.Signup.SignupRequest;
+import com.aneesh.suraksha.users.controller.Signup.SignupResponse;
 import com.aneesh.suraksha.users.controller.Signup.SignupResult;
 import com.aneesh.suraksha.users.dto.SendMagicLinkRequest;
 import com.aneesh.suraksha.users.dto.SendMagicLinkResponse;
@@ -69,13 +70,14 @@ public class UserController {
     }
 
     @PostMapping("/api/v1/auth/token/register")
-    public ResponseEntity<SignupResult> createUser(@RequestBody SignupRequest entity, HttpServletResponse response,
+    public ResponseEntity<SignupResponse> createUser(@RequestBody SignupRequest entity, HttpServletResponse response,
             HttpServletRequest request) {
         String ip = clientIPAddress.getIP(request);
         String userAgent = request.getHeader("User-Agent");
         UserMetaData metaData = new UserMetaData(ip, userAgent);
         SignupResult res = registrationService.OnBoard(entity, metaData);
-        return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.FORBIDDEN).body(res);
+        return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.FORBIDDEN)
+                .body(new SignupResponse(res.status(), res.message(), res.token(), res.refreshToken()));
     }
 
     @GetMapping("/api/v1/users")
