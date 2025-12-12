@@ -45,7 +45,7 @@ public class LoginService {
             }
             boolean match = passwordEncoder.matches(request.password(), user.getPassword());
             boolean apiKeyMatch = apiKeyService.verifyApiKey(user.getOrganisations().getId(),
-                    request.organisationAPIKey());
+                    request.apiKey());
             if (!match || !apiKeyMatch) {
                 return new LoginResult(false, "Invalid credentials", null, null, null);
             }
