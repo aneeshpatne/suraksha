@@ -13,6 +13,8 @@ import com.aneesh.suraksha.users.dto.UserDTO;
 public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     UserEntity findByMailId(String mailId);
 
+    UserEntity findByMailIdAndOrganisationsId(String mailId, String organisationsId);
+
     @Query("SELECT new com.aneesh.suraksha.users.dto.UserDTO(u.id, u.mailId, u.organisations.id) FROM UserEntity u")
     List<UserDTO> findAllUsersAsDTO();
 }

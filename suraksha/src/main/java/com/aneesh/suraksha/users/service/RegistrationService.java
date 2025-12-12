@@ -18,18 +18,22 @@ public class RegistrationService {
     private final RefreshTokenService refreshTokenService;
 
     private final JwtService jwtService;
+
+    private final ApiKeyService apiKeyService;
+
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private OrganisationsRepository organisationsRepository;
 
     public RegistrationService(UserRepository userRepository, PasswordEncoder passwordEncoder,
             OrganisationsRepository organisationsRepository, JwtService jwtService,
-            RefreshTokenService refreshTokenService) {
+            RefreshTokenService refreshTokenService, ApiKeyService apiKeyService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.organisationsRepository = organisationsRepository;
         this.jwtService = jwtService;
         this.refreshTokenService = refreshTokenService;
+        this.apiKeyService = apiKeyService;
     }
 
     public SignupResult OnBoard(SignupRequest entity, UserMetaData metaData) {
@@ -38,7 +42,15 @@ public class RegistrationService {
             if (organisation == null) {
                 return new SignupResult(false, "An error occurred during registration", null, null, null);
             }
-            UserEntity existing = userRepository.findByMailId(entity.mailId());
+            // Verify API key before allowing registration
+            boolean apiKeyMatch = apiKeyService.verifyApiKey(entity.organisationId(), entity.apiKey());
+            if (!apiKeyMatch) {
+                return new SignupResult(false, "Invalid API key", null, null, null);
+            }
+            // Check for existing user with same email AND organisation (allows same email
+            // in different orgs)
+            UserEntity existing = userRepository.findByMailIdAndOrganisationsId(entity.mailId(),
+                    entity.organisationId());
             if (existing != null) {
                 return new SignupResult(false, "User Already Exists", null, null, null);
             }
