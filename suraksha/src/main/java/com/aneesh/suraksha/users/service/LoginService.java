@@ -6,11 +6,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.aneesh.suraksha.users.controller.Login.LoginRequest;
+import com.aneesh.suraksha.users.dto.UserMetaData;
 import com.aneesh.suraksha.users.model.UserEntity;
 import com.aneesh.suraksha.users.model.UserRepository;
 
 @Service
 public class LoginService {
+
+    private final RefreshTokenService refreshTokenService;
 
     private final JwtService jwtService;
 
@@ -20,13 +23,15 @@ public class LoginService {
 
     private final UserRepository userRepository;
 
-    public LoginService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public LoginService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService,
+            RefreshTokenService refreshTokenService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.refreshTokenService = refreshTokenService;
     }
 
-    public LoginResult login(LoginRequest request) {
+    public LoginResult login(LoginRequest request, UserMetaData metaData) {
         try {
             UserEntity user = userRepository.findByMailId(request.mailId());
             if (user == null) {
@@ -40,6 +45,8 @@ public class LoginService {
                 return new LoginResult(false, "Invalid credentials", null, null);
             }
             String token = jwtService.generateToken(user);
+            RefreshTokenServiceResponse res = refreshTokenService
+                    .generate(new RefreshTokenServiceRequest(user, metaData.ip(), metaData.userAgent()));
             return new LoginResult(true, "Success", token, user);
         } catch (Exception e) {
             logger.error("Error during login for user: {}", request.mailId(), e);

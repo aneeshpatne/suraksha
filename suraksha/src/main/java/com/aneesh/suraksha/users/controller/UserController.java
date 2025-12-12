@@ -23,6 +23,7 @@ import com.aneesh.suraksha.users.dto.SendMagicLinkResponse;
 import com.aneesh.suraksha.users.dto.VerifyMagicLinkRequest;
 import com.aneesh.suraksha.users.dto.VerifyMagicLinkResponse;
 import com.aneesh.suraksha.users.dto.UserDTO;
+import com.aneesh.suraksha.users.dto.UserMetaData;
 import com.aneesh.suraksha.users.dto.MagicLinkVerificationResult;
 import com.aneesh.suraksha.users.model.Organisations;
 import com.aneesh.suraksha.users.model.OrganisationsRepository;
@@ -108,36 +109,10 @@ public class UserController {
     @PostMapping("/api/v1/auth/token/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest entity, HttpServletResponse response,
             HttpServletRequest request) {
-        LoginResult res = loginService.login(entity);
-
-        if (res.status()) {
-            Cookie cookie = new Cookie("jwt", res.token());
-            cookie.setHttpOnly(true);
-            cookie.setSecure(true);
-            cookie.setPath("/");
-            cookie.setMaxAge(60 * 60);
-            response.addCookie(cookie);
-            String ip = clientIPAddress.getIP(request);
-            String userAgent = request.getHeader("User-Agent");
-
-            RefreshTokenServiceRequest tokenReq = new RefreshTokenServiceRequest(
-                    res.user(), ip, userAgent);
-            RefreshTokenServiceResponse tokenRes = refreshTokenService.generate(tokenReq);
-
-            Cookie refreshCookie = new Cookie("refresh_token", tokenRes.token());
-            refreshCookie.setHttpOnly(true);
-            refreshCookie.setSecure(true);
-            refreshCookie.setPath("/");
-            refreshCookie.setMaxAge(60 * 60 * 24 * 7); // 7 days
-            response.addCookie(refreshCookie);
-
-            Cookie refreshIdCookie = new Cookie("refresh_token_id", tokenRes.id().toString());
-            refreshIdCookie.setHttpOnly(true);
-            refreshIdCookie.setSecure(true);
-            refreshIdCookie.setPath("/");
-            refreshIdCookie.setMaxAge(60 * 60 * 24 * 7); // 7 days
-            response.addCookie(refreshIdCookie);
-        }
+        String ip = clientIPAddress.getIP(request);
+        String userAgent = request.getHeader("User-Agent");
+        UserMetaData metaData = new UserMetaData(ip, userAgent);
+        LoginResult res = loginService.login(entity, metaData);
 
         return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED)
                 .body(new LoginResponse(res.status(), res.message()));
