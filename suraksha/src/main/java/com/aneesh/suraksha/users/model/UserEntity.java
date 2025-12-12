@@ -10,7 +10,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 
 @Entity
 @Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = { "mailId", "organisation_id" }))
