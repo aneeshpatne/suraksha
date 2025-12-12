@@ -2,7 +2,6 @@ package com.aneesh.suraksha.users.controller;
 
 import com.aneesh.suraksha.users.service.*;
 
-import org.flywaydb.core.internal.nc.MetaData;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,16 +10,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import com.aneesh.suraksha.users.component.ClientIPAddress;
-import com.aneesh.suraksha.users.controller.Login.LoginRequest;
-import com.aneesh.suraksha.users.controller.Login.LoginResponse;
-import com.aneesh.suraksha.users.controller.Signup.SignupRequest;
-import com.aneesh.suraksha.users.controller.Signup.SignupResponse;
-import com.aneesh.suraksha.users.controller.Signup.SignupResult;
+import com.aneesh.suraksha.users.dto.LoginRequest;
+import com.aneesh.suraksha.users.dto.LoginResponse;
+import com.aneesh.suraksha.users.dto.LoginResult;
+import com.aneesh.suraksha.users.dto.OnboardRequest;
+import com.aneesh.suraksha.users.dto.OnboardResponse;
+import com.aneesh.suraksha.users.dto.SignupRequest;
+import com.aneesh.suraksha.users.dto.SignupResponse;
+import com.aneesh.suraksha.users.dto.SignupResult;
 import com.aneesh.suraksha.users.dto.SendMagicLinkRequest;
 import com.aneesh.suraksha.users.dto.SendMagicLinkResponse;
 import com.aneesh.suraksha.users.dto.VerifyMagicLinkRequest;

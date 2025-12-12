@@ -4,6 +4,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.aneesh.suraksha.users.component.OrganisationIdGenerator;
+import com.aneesh.suraksha.users.dto.OnboardRequest;
+import com.aneesh.suraksha.users.dto.OnboardResponse;
 import com.aneesh.suraksha.users.model.Organisations;
 import com.aneesh.suraksha.users.model.OrganisationsRepository;
 

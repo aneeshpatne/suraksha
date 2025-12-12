@@ -1,4 +1,4 @@
-package com.aneesh.suraksha.users.controller.Signup;
+package com.aneesh.suraksha.users.dto;
 
 public record SignupResponse(Boolean status, String message, String jwt, String refreshToken) {
 }

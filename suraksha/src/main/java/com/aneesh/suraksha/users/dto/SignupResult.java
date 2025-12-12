@@ -1,4 +1,4 @@
-package com.aneesh.suraksha.users.controller.Signup;
+package com.aneesh.suraksha.users.dto;
 
 import com.aneesh.suraksha.users.model.UserEntity;
 

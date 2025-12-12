@@ -3,8 +3,9 @@ package com.aneesh.suraksha.users.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.aneesh.suraksha.users.controller.Signup.SignupRequest;
-import com.aneesh.suraksha.users.controller.Signup.SignupResult;
+import com.aneesh.suraksha.users.dto.SignupRequest;
+import com.aneesh.suraksha.users.dto.SignupResult;
+import com.aneesh.suraksha.users.dto.RefreshTokenServiceRequest;
 import com.aneesh.suraksha.users.dto.UserMetaData;
 import com.aneesh.suraksha.users.model.UserEntity;
 import com.aneesh.suraksha.users.model.UserRepository;
