@@ -4,8 +4,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.aneesh.suraksha.users.component.OrganisationIdGenerator;
-import com.aneesh.suraksha.users.dto.OnboardRequest;
-import com.aneesh.suraksha.users.dto.OnboardResponse;
+import com.aneesh.suraksha.users.dto.CreateOrganizationRequest;
+import com.aneesh.suraksha.users.dto.CreateOrganizationResponse;
 import com.aneesh.suraksha.users.model.Organisations;
 import com.aneesh.suraksha.users.model.OrganisationsRepository;
 
@@ -26,12 +26,12 @@ public class OrganisationOnboard {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public OnboardResponse OnBoard(OnboardRequest req) {
+    public CreateOrganizationResponse OnBoard(CreateOrganizationRequest req) {
         String API_KEY = apiKeyService.generateAPIKey();
         String ID = organisationIdGenerator.generateId();
         String HashedKey = apiKeyService.hashAPIKey(API_KEY);
         Organisations organisation = new Organisations(ID, req.name(), HashedKey);
-        OnboardResponse res = new OnboardResponse(ID, req.name(), API_KEY);
+        CreateOrganizationResponse res = new CreateOrganizationResponse(ID, req.name(), API_KEY);
         organisationsRepository.save(organisation);
         return res;
     }

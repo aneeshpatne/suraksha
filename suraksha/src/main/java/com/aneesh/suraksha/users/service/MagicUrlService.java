@@ -10,9 +10,9 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import com.aneesh.suraksha.dto.MailDTO;
+import com.aneesh.suraksha.dto.MailDto;
 import com.aneesh.suraksha.users.dto.MagicLinkTokenPayload;
-import com.aneesh.suraksha.users.dto.MagicLinkVerificationResult;
+import com.aneesh.suraksha.users.dto.MagicLinkResult;
 import com.aneesh.suraksha.users.model.UserEntity;
 import tools.jackson.databind.ObjectMapper;
 
@@ -49,25 +49,25 @@ public class MagicUrlService {
             String fullMagicLink = "http://localhost:8080/api/v1/verify-magic-url?token=" + magicUrl;
             String emailBody = generateEmailBody(fullMagicLink);
 
-            MailDTO mailDTO = new MailDTO("aneeshpatne@gmail.com",
+            MailDto mailDto = new MailDto("aneeshpatne@gmail.com",
                     "Suraksha Magic Sign In", emailBody);
 
             rabbitTemplate.convertAndSend(RabbitMQConfig.EMAIL_EXCHANGE,
-                    RabbitMQConfig.EMAIL_ROUTING_KEY, mailDTO);
+                    RabbitMQConfig.EMAIL_ROUTING_KEY, mailDto);
 
         } catch (Exception e) {
             throw new RuntimeException("Failed to generate magic URL", e);
         }
     }
 
-    public MagicLinkVerificationResult verifySendMagicUrl(String token) {
+    public MagicLinkResult verifySendMagicUrl(String token) {
         String json = stringRedisTemplate.opsForValue().get("magic:" + token);
         if (json == null) {
-            return new MagicLinkVerificationResult(false, null);
+            return new MagicLinkResult(false, null);
         }
         MagicLinkTokenPayload payload = objectMapper.readValue(json, MagicLinkTokenPayload.class);
         stringRedisTemplate.delete("magic:" + token);
-        return new MagicLinkVerificationResult(true, payload.userId());
+        return new MagicLinkResult(true, payload.userId());
     }
 
     private String generateEmailBody(String magicLink) {

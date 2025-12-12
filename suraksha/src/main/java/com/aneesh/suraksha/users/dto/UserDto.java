@@ -4,10 +4,10 @@ import java.util.UUID;
 
 import com.aneesh.suraksha.users.model.UserEntity;
 
-public record UserDTO(UUID id, String mailId, String organisationId) {
+public record UserDto(UUID id, String mailId, String organisationId) {
 
-    public static UserDTO fromEntity(UserEntity user) {
-        return new UserDTO(
+    public static UserDto fromEntity(UserEntity user) {
+        return new UserDto(
                 user.getId(),
                 user.getMailId(),
                 user.getOrganisations().getId());

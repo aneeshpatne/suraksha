@@ -17,18 +17,18 @@ import com.aneesh.suraksha.users.component.ClientIPAddress;
 import com.aneesh.suraksha.users.dto.LoginRequest;
 import com.aneesh.suraksha.users.dto.LoginResponse;
 import com.aneesh.suraksha.users.dto.LoginResult;
-import com.aneesh.suraksha.users.dto.OnboardRequest;
-import com.aneesh.suraksha.users.dto.OnboardResponse;
-import com.aneesh.suraksha.users.dto.SignupRequest;
-import com.aneesh.suraksha.users.dto.SignupResponse;
-import com.aneesh.suraksha.users.dto.SignupResult;
-import com.aneesh.suraksha.users.dto.SendMagicLinkRequest;
-import com.aneesh.suraksha.users.dto.SendMagicLinkResponse;
-import com.aneesh.suraksha.users.dto.VerifyMagicLinkRequest;
-import com.aneesh.suraksha.users.dto.VerifyMagicLinkResponse;
-import com.aneesh.suraksha.users.dto.UserDTO;
-import com.aneesh.suraksha.users.dto.UserMetaData;
-import com.aneesh.suraksha.users.dto.MagicLinkVerificationResult;
+import com.aneesh.suraksha.users.dto.CreateOrganizationRequest;
+import com.aneesh.suraksha.users.dto.CreateOrganizationResponse;
+import com.aneesh.suraksha.users.dto.RegisterRequest;
+import com.aneesh.suraksha.users.dto.RegisterResponse;
+import com.aneesh.suraksha.users.dto.RegisterResult;
+import com.aneesh.suraksha.users.dto.MagicLinkRequest;
+import com.aneesh.suraksha.users.dto.MagicLinkResponse;
+import com.aneesh.suraksha.users.dto.MagicLinkVerifyRequest;
+import com.aneesh.suraksha.users.dto.MagicLinkVerifyResponse;
+import com.aneesh.suraksha.users.dto.UserDto;
+import com.aneesh.suraksha.users.dto.RequestMetadata;
+import com.aneesh.suraksha.users.dto.MagicLinkResult;
 import com.aneesh.suraksha.users.model.Organisations;
 import com.aneesh.suraksha.users.model.OrganisationsRepository;
 import com.aneesh.suraksha.users.model.UserEntity;
@@ -71,19 +71,20 @@ public class UserController {
     }
 
     @PostMapping("/api/v1/auth/token/register")
-    public ResponseEntity<SignupResponse> createUser(@RequestBody SignupRequest entity, HttpServletResponse response,
+    public ResponseEntity<RegisterResponse> createUser(@RequestBody RegisterRequest entity,
+            HttpServletResponse response,
             HttpServletRequest request) {
         String ip = clientIPAddress.getIP(request);
         String userAgent = request.getHeader("User-Agent");
-        UserMetaData metaData = new UserMetaData(ip, userAgent);
-        SignupResult res = registrationService.OnBoard(entity, metaData);
+        RequestMetadata metaData = new RequestMetadata(ip, userAgent);
+        RegisterResult res = registrationService.OnBoard(entity, metaData);
         return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.FORBIDDEN)
-                .body(new SignupResponse(res.status(), res.message(), res.token(), res.refreshToken()));
+                .body(new RegisterResponse(res.status(), res.message(), res.token(), res.refreshToken()));
     }
 
     @GetMapping("/api/v1/users")
-    public List<UserDTO> getAllUsers() {
-        return userRepository.findAllUsersAsDTO();
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAllUsersAsDto();
     }
 
     @PostMapping("/api/v1/auth/token/login")
@@ -91,7 +92,7 @@ public class UserController {
             HttpServletRequest request) {
         String ip = clientIPAddress.getIP(request);
         String userAgent = request.getHeader("User-Agent");
-        UserMetaData metaData = new UserMetaData(ip, userAgent);
+        RequestMetadata metaData = new RequestMetadata(ip, userAgent);
         LoginResult res = loginService.login(entity, metaData);
 
         return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED)
@@ -99,28 +100,28 @@ public class UserController {
     }
 
     @PostMapping("/api/v1/organisations")
-    public OnboardResponse registerOrganisation(@RequestBody OnboardRequest entity) {
-        OnboardResponse res = organisationOnboard.OnBoard(entity);
+    public CreateOrganizationResponse registerOrganisation(@RequestBody CreateOrganizationRequest entity) {
+        CreateOrganizationResponse res = organisationOnboard.OnBoard(entity);
         return res;
 
     }
 
     @PostMapping("/api/v1/magic-url")
-    public SendMagicLinkResponse magicURL(@RequestBody SendMagicLinkRequest entity) {
+    public MagicLinkResponse magicURL(@RequestBody MagicLinkRequest entity) {
         UserEntity user = userRepository.findByMailId(entity.mailId());
         magicUrlService.SendMagicUrl(user);
-        SendMagicLinkResponse res = new SendMagicLinkResponse(true);
+        MagicLinkResponse res = new MagicLinkResponse(true);
         return res;
 
     }
 
     @GetMapping("/api/v1/verify-magic-url")
-    public ResponseEntity<VerifyMagicLinkResponse> verifyMagicURL(@ModelAttribute VerifyMagicLinkRequest param) {
-        MagicLinkVerificationResult res = magicUrlService.verifySendMagicUrl(param.token());
+    public ResponseEntity<MagicLinkVerifyResponse> verifyMagicURL(@ModelAttribute MagicLinkVerifyRequest param) {
+        MagicLinkResult res = magicUrlService.verifySendMagicUrl(param.token());
         if (!res.status()) {
-            return ResponseEntity.badRequest().body(new VerifyMagicLinkResponse(null, false));
+            return ResponseEntity.badRequest().body(new MagicLinkVerifyResponse(null, false));
         }
-        return ResponseEntity.ok().body(new VerifyMagicLinkResponse(res.userId(), true));
+        return ResponseEntity.ok().body(new MagicLinkVerifyResponse(res.userId(), true));
     }
 
     @GetMapping("/api/v1/organisations")

@@ -2,15 +2,15 @@ package com.aneesh.suraksha.dto;
 
 import java.io.Serializable;
 
-public class MailDTO implements Serializable {
+public class MailDto implements Serializable {
     private String to;
     private String subject;
     private String body;
 
-    public MailDTO() {
+    public MailDto() {
     }
 
-    public MailDTO(String to, String subject, String body) {
+    public MailDto(String to, String subject, String body) {
         this.to = to;
         this.subject = subject;
         this.body = body;

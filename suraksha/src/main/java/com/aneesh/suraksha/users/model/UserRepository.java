@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.aneesh.suraksha.users.dto.UserDTO;
+import com.aneesh.suraksha.users.dto.UserDto;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, UUID> {
@@ -15,6 +15,6 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
 
     UserEntity findByMailIdAndOrganisationsId(String mailId, String organisationsId);
 
-    @Query("SELECT new com.aneesh.suraksha.users.dto.UserDTO(u.id, u.mailId, u.organisations.id) FROM UserEntity u")
-    List<UserDTO> findAllUsersAsDTO();
+    @Query("SELECT new com.aneesh.suraksha.users.dto.UserDto(u.id, u.mailId, u.organisations.id) FROM UserEntity u")
+    List<UserDto> findAllUsersAsDto();
 }

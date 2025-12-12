@@ -13,7 +13,7 @@ public class EmailProducer {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void sendMail(com.aneesh.suraksha.dto.MailDTO mail) {
+    public void sendMail(com.aneesh.suraksha.dto.MailDto mail) {
         rabbitTemplate.convertAndSend(RabbitMQConfig.EMAIL_EXCHANGE,
                 RabbitMQConfig.EMAIL_ROUTING_KEY,
                 mail);

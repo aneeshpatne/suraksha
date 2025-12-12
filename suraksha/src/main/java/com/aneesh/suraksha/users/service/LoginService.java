@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.aneesh.suraksha.users.dto.LoginRequest;
 import com.aneesh.suraksha.users.dto.LoginResult;
-import com.aneesh.suraksha.users.dto.RefreshTokenServiceRequest;
-import com.aneesh.suraksha.users.dto.UserMetaData;
+import com.aneesh.suraksha.users.dto.CreateRefreshTokenRequest;
+import com.aneesh.suraksha.users.dto.RequestMetadata;
 import com.aneesh.suraksha.users.model.UserEntity;
 import com.aneesh.suraksha.users.model.UserRepository;
 
@@ -36,7 +36,7 @@ public class LoginService {
         this.apiKeyService = apiKeyService;
     }
 
-    public LoginResult login(LoginRequest request, UserMetaData metaData) {
+    public LoginResult login(LoginRequest request, RequestMetadata metaData) {
         try {
             UserEntity user = userRepository.findByMailId(request.mailId());
             if (user == null) {
@@ -54,7 +54,7 @@ public class LoginService {
 
             String token = jwtService.generateToken(user);
             String refreshToken = refreshTokenService
-                    .generate(new RefreshTokenServiceRequest(user, metaData.ip(), metaData.userAgent()));
+                    .generate(new CreateRefreshTokenRequest(user, metaData.ip(), metaData.userAgent()));
             return new LoginResult(true, "Success", token, refreshToken, user);
         } catch (Exception e) {
             logger.error("Error during login for user: {}", request.mailId(), e);

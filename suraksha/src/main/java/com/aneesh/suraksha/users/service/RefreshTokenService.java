@@ -8,7 +8,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.aneesh.suraksha.config.AppSecretConfig;
-import com.aneesh.suraksha.users.dto.RefreshTokenServiceRequest;
+import com.aneesh.suraksha.users.dto.CreateRefreshTokenRequest;
 import com.aneesh.suraksha.users.model.RefreshToken;
 
 import org.springframework.stereotype.Service;
@@ -53,7 +53,7 @@ public class RefreshTokenService {
         }
     }
 
-    public String generate(RefreshTokenServiceRequest request) {
+    public String generate(CreateRefreshTokenRequest request) {
         String token = IssueRefreshToken();
         String hashedToken = hashToken(token);
 

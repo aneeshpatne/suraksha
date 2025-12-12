@@ -1,7 +1,7 @@
 package com.aneesh.suraksha.users.service;
 
 import com.aneesh.suraksha.config.RabbitMQConfig;
-import com.aneesh.suraksha.dto.MailDTO;
+import com.aneesh.suraksha.dto.MailDto;
 import java.security.SecureRandom;
 import java.util.concurrent.TimeUnit;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -32,11 +32,11 @@ public class OtpService {
         stringRedisTemplate.opsForValue().set(key, otp, 5, TimeUnit.MINUTES);
 
         String emailBody = generateEmailBody(otp);
-        MailDTO mailDTO = new MailDTO("aneeshpatne@gmail.com",
+        MailDto mailDto = new MailDto("aneeshpatne@gmail.com",
                 "Suraksha Verification Code " + otp, emailBody);
 
         rabbitTemplate.convertAndSend(RabbitMQConfig.EMAIL_EXCHANGE,
-                RabbitMQConfig.EMAIL_ROUTING_KEY, mailDTO);
+                RabbitMQConfig.EMAIL_ROUTING_KEY, mailDto);
     }
 
     private String generateEmailBody(String otp) {
