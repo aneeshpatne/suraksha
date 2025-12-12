@@ -1,6 +1,8 @@
 package com.aneesh.suraksha.users.controller;
 
 import com.aneesh.suraksha.users.service.*;
+
+import org.flywaydb.core.internal.nc.MetaData;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,7 +71,10 @@ public class UserController {
     @PostMapping("/api/v1/auth/token/register")
     public ResponseEntity<SignupResponse> createUser(@RequestBody SignupRequest entity, HttpServletResponse response,
             HttpServletRequest request) {
-        SignupResponse res = registrationService.OnBoard(entity);
+        String ip = clientIPAddress.getIP(request);
+        String userAgent = request.getHeader("User-Agent");
+        UserMetaData metaData = new UserMetaData(ip, userAgent);
+        SignupResponse res = registrationService.OnBoard(entity, metaData);
         if (res.status()) {
 
         }
