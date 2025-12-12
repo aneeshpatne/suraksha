@@ -36,7 +36,7 @@ public class RegistrationService {
         try {
             Organisations organisation = organisationsRepository.findById(entity.organisationId()).orElse(null);
             if (organisation == null) {
-                return new SignupResponse(false, "Organisation Not Found", null, null, null);
+                return new SignupResponse(false, "An error occurred during registration", null, null, null);
             }
             UserEntity existing = userRepository.findByMailId(entity.mailId());
             if (existing != null) {
