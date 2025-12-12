@@ -52,7 +52,7 @@ public class RefreshTokenService {
         }
     }
 
-    public RefreshTokenServiceResponse generate(RefreshTokenServiceRequest request) {
+    public String generate(RefreshTokenServiceRequest request) {
         String token = IssueRefreshToken();
         String hashedToken = hashToken(token);
 
@@ -67,7 +67,7 @@ public class RefreshTokenService {
 
         refreshToken = refreshTokenRepository.save(refreshToken);
 
-        return new RefreshTokenServiceResponse(token);
+        return token;
     }
 
 }
