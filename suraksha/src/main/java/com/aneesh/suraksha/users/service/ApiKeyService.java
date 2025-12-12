@@ -7,6 +7,8 @@ import java.util.Base64;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.aneesh.suraksha.users.model.Organisations;
+import com.aneesh.suraksha.users.model.OrganisationsRepository;
 import org.springframework.stereotype.Service;
 
 import com.aneesh.suraksha.config.AppSecretConfig;
@@ -14,10 +16,13 @@ import com.aneesh.suraksha.config.AppSecretConfig;
 @Service
 public class ApiKeyService {
 
+    private final OrganisationsRepository organisationsRepository;
+
     private final AppSecretConfig appSecretConfig;
 
-    public ApiKeyService(AppSecretConfig appSecretConfig) {
+    public ApiKeyService(AppSecretConfig appSecretConfig, OrganisationsRepository organisationsRepository) {
         this.appSecretConfig = appSecretConfig;
+        this.organisationsRepository = organisationsRepository;
     }
 
     public String generateAPIKey() {
@@ -43,6 +48,19 @@ public class ApiKeyService {
         } catch (Exception e) {
             throw new IllegalStateException("Failed to hash API key", e);
         }
+    }
+
+    public Boolean verifyApiKey(String id, String apiKey) {
+        String hashedAPIKey = organisationsRepository.findById(id).map(Organisations::getApiKey).orElse("");
+        if (hashedAPIKey.isEmpty()) {
+            return false;
+        }
+
+        String computedHash = hashAPIKey(apiKey);
+
+        return java.security.MessageDigest.isEqual(
+                hashedAPIKey.getBytes(StandardCharsets.UTF_8),
+                computedHash.getBytes(StandardCharsets.UTF_8));
     }
 
 }
