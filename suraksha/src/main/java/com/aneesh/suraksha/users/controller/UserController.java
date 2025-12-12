@@ -21,6 +21,7 @@ import com.aneesh.suraksha.users.controller.Signup.SignupResponse;
 import com.aneesh.suraksha.users.dto.SendMagicLinkRequest;
 import com.aneesh.suraksha.users.dto.SendMagicLinkResponse;
 import com.aneesh.suraksha.users.dto.VerifyMagicLinkRequest;
+import com.aneesh.suraksha.users.dto.VerifyMagicLinkResponse;
 import com.aneesh.suraksha.users.dto.UserDTO;
 import com.aneesh.suraksha.users.dto.MagicLinkVerificationResult;
 import com.aneesh.suraksha.users.model.Organisations;
@@ -159,16 +160,12 @@ public class UserController {
     }
 
     @GetMapping("/api/v1/verify-magic-url")
-    public ResponseEntity<?> verifyMagicURL(@ModelAttribute VerifyMagicLinkRequest param) {
+    public ResponseEntity<VerifyMagicLinkResponse> verifyMagicURL(@ModelAttribute VerifyMagicLinkRequest param) {
         MagicLinkVerificationResult res = magicUrlService.verifySendMagicUrl(param.token());
-
         if (!res.status()) {
-            return ResponseEntity.badRequest().body("invalid");
+            return ResponseEntity.badRequest().body(new VerifyMagicLinkResponse(null, false));
         }
-
-        return ResponseEntity.status(302)
-                .header("Location", "/app?userId=" + res.userId())
-                .build();
+        return ResponseEntity.ok().body(new VerifyMagicLinkResponse(res.userId(), true));
     }
 
     @GetMapping("/api/v1/organisations")
