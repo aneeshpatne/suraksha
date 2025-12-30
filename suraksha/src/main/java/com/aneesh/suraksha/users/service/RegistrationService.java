@@ -20,33 +20,25 @@ public class RegistrationService {
 
     private final JwtService jwtService;
 
-    private final ApiKeyService apiKeyService;
-
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private OrganisationsRepository organisationsRepository;
 
     public RegistrationService(UserRepository userRepository, PasswordEncoder passwordEncoder,
             OrganisationsRepository organisationsRepository, JwtService jwtService,
-            RefreshTokenService refreshTokenService, ApiKeyService apiKeyService) {
+            RefreshTokenService refreshTokenService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.organisationsRepository = organisationsRepository;
         this.jwtService = jwtService;
         this.refreshTokenService = refreshTokenService;
-        this.apiKeyService = apiKeyService;
     }
 
     public RegisterResult OnBoard(RegisterRequest entity, RequestMetadata metaData) {
         try {
             Organisations organisation = organisationsRepository.findById(entity.organisationId()).orElse(null);
             if (organisation == null) {
-                return new RegisterResult(false, "An error occurred during registration", null, null, null);
-            }
-            // Verify API key before allowing registration
-            boolean apiKeyMatch = apiKeyService.verifyApiKey(entity.organisationId(), entity.apiKey());
-            if (!apiKeyMatch) {
-                return new RegisterResult(false, "Invalid API key", null, null, null);
+                return new RegisterResult(false, "Organisation not found", null, null, null);
             }
             // Check for existing user with same email AND organisation (allows same email
             // in different orgs)

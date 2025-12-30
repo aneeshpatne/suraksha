@@ -11,15 +11,13 @@ public class Organisations {
     @Id
     private String id;
     private String name;
-    private String apiKey;
 
     public Organisations() {
     }
 
-    public Organisations(String id, String name, String apiKey) {
+    public Organisations(String id, String name) {
         this.id = id;
         this.name = name;
-        this.apiKey = apiKey;
     }
 
     public String getId() {
@@ -28,14 +26,6 @@ public class Organisations {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
-    }
-
-    public String getApiKey() {
-        return this.apiKey;
     }
 
     public String getName() {

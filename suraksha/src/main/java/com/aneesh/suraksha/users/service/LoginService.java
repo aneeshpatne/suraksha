@@ -15,8 +15,6 @@ import com.aneesh.suraksha.users.model.UserRepository;
 @Service
 public class LoginService {
 
-    private final ApiKeyService apiKeyService;
-
     private final RefreshTokenService refreshTokenService;
 
     private final JwtService jwtService;
@@ -28,12 +26,11 @@ public class LoginService {
     private final UserRepository userRepository;
 
     public LoginService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService,
-            RefreshTokenService refreshTokenService, ApiKeyService apiKeyService) {
+            RefreshTokenService refreshTokenService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.refreshTokenService = refreshTokenService;
-        this.apiKeyService = apiKeyService;
     }
 
     public LoginResult login(LoginRequest request, RequestMetadata metaData) {
@@ -46,9 +43,7 @@ public class LoginService {
                 return new LoginResult(false, "Invalid credentials", null, null, null);
             }
             boolean match = passwordEncoder.matches(request.password(), user.getPassword());
-            boolean apiKeyMatch = apiKeyService.verifyApiKey(user.getOrganisations().getId(),
-                    request.apiKey());
-            if (!match || !apiKeyMatch) {
+            if (!match) {
                 return new LoginResult(false, "Invalid credentials", null, null, null);
             }
 

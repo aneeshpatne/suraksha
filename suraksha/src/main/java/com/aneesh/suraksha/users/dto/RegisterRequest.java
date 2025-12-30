@@ -1,4 +1,4 @@
 package com.aneesh.suraksha.users.dto;
 
-public record RegisterRequest(String mailId, String password, String organisationId, String apiKey) {
+public record RegisterRequest(String mailId, String password, String organisationId) {
 }
