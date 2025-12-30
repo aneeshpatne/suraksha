@@ -2,7 +2,12 @@ import { useState } from "react";
 import "./login.css";
 import { loginWithEmailPassword } from "../auth/authApi";
 
-export const Login = () => {
+interface LoginProps {
+  appName?: string;
+  onLoginSuccess?: (data: any) => void;
+}
+
+export const Login = ({ appName = "Suraksha", onLoginSuccess }: LoginProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -14,10 +19,12 @@ export const Login = () => {
     setIsLoading(true);
 
     try {
-      await loginWithEmailPassword(email, password);
+      const data = await loginWithEmailPassword(email, password);
       // Handle successful login (e.g., redirect or update state)
-      // For now, we'll just log it as the user hasn't specified routing yet
       console.log("Login successful");
+      if (onLoginSuccess) {
+        onLoginSuccess(data);
+      }
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
     } finally {
@@ -43,10 +50,10 @@ export const Login = () => {
                 fill="white"
               />
             </svg>
-            Suraksha
+            {appName}
           </div>
           <div className="login-header">
-            <h1>Sign in to Suraksha</h1>
+            <h1>Sign in to {appName}</h1>
             <p>Welcome back! Please sign in to continue</p>
           </div>
         </div>
