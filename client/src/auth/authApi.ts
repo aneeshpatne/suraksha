@@ -1,8 +1,5 @@
-export async function loginWithEmailPassword(
-  mailId: string,
-  password: string,
-  organisationId?: string
-) {
+export async function loginWithEmailPassword(mailId: string, password: string) {
+  const organisationId: string = import.meta.env.VITE_ORG_ID;
   const res = await fetch("http://localhost:8080/api/v1/auth/token/login", {
     method: "POST",
     credentials: "include",
