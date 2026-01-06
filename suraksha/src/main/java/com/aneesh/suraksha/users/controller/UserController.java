@@ -94,9 +94,10 @@ public class UserController {
     @PostMapping("/api/v1/auth/token/refresh")
     public ResponseEntity<RefreshResponse> refresh(
             @CookieValue(name = "refresh_token", required = false) String rawToken) {
-        // TODO: process POST request
+        if (rawToken == null || rawToken.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
-        return entity;
     }
 
     @PostMapping("/api/v1/auth/token/login")
