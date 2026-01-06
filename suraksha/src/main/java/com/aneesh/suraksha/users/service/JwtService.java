@@ -48,7 +48,7 @@ public class JwtService {
 
     public String generateToken(Map<String, Object> extraClaims, UserEntity userEntity) {
         long now = System.currentTimeMillis();
-        long expirationMs = 15 * 60 * 1000; // 15 min
+        long expirationMs = 1 * 60 * 1000; // 15 min
 
         Map<String, Object> claims = new HashMap<>(extraClaims);
         claims.put("userId", userEntity.getId());
