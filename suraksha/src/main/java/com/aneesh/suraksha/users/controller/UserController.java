@@ -4,6 +4,7 @@ import com.aneesh.suraksha.users.service.*;
 
 import jakarta.servlet.http.Cookie;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -96,12 +97,14 @@ public class UserController {
         RequestMetadata metaData = new RequestMetadata(ip, userAgent);
         LoginResult res = loginService.login(entity, metaData);
         if (res.status()) {
-            Cookie RefreshToken = new Cookie("authToken", res.refreshToken());
-            RefreshToken.setHttpOnly(true);
-            RefreshToken.setSecure(true);
-            RefreshToken.setPath("/");
-            RefreshToken.setMaxAge(30 * 24 * 60 * 60);
-            response.addCookie(RefreshToken);
+            ResponseCookie refreshToken = ResponseCookie.from("refresh_token", res.refreshToken())
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/")
+                    .sameSite("Strict")
+                    .maxAge(30 * 24 * 60 * 60)
+                    .build();
+            response.addHeader("Set-Cookie", refreshToken.toString());
         }
         return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED)
                 .body(new LoginResponse(res.status(), res.message(), res.token()));
