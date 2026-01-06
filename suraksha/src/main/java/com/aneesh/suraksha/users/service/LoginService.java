@@ -2,6 +2,7 @@ package com.aneesh.suraksha.users.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,8 @@ import com.aneesh.suraksha.users.model.UserRepository;
 @Service
 public class LoginService {
 
+    private final StringRedisTemplate stringRedisTemplate;
+
     private final RefreshTokenService refreshTokenService;
 
     private final JwtService jwtService;
@@ -26,11 +29,12 @@ public class LoginService {
     private final UserRepository userRepository;
 
     public LoginService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService,
-            RefreshTokenService refreshTokenService) {
+            RefreshTokenService refreshTokenService, StringRedisTemplate stringRedisTemplate) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.refreshTokenService = refreshTokenService;
+        this.stringRedisTemplate = stringRedisTemplate;
     }
 
     public LoginResult login(LoginRequest request, RequestMetadata metaData) {

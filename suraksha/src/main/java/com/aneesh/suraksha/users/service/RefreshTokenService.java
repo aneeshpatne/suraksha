@@ -1,6 +1,7 @@
 package com.aneesh.suraksha.users.service;
 
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Base64;
 
@@ -36,20 +37,16 @@ public class RefreshTokenService {
         return prefix + randomPart;
     }
 
-    private byte[] getSecretBytes() {
-        return Base64.getDecoder().decode(appSecretConfig.getRefreshSecretKey());
-    }
-
     private String hashToken(String token) {
         try {
-            byte[] secretBytes = getSecretBytes();
-            Mac mac = Mac.getInstance("HmacSHA256");
-            SecretKeySpec keySpec = new SecretKeySpec(secretBytes, "HmacSHA256");
-            mac.init(keySpec);
-            byte[] hmacBytes = mac.doFinal(token.getBytes(StandardCharsets.UTF_8));
-            return Base64.getEncoder().encodeToString(hmacBytes);
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(token.getBytes());
+            StringBuilder hex = new StringBuilder();
+            for (byte b : hash)
+                hex.append(String.format("%02x", b));
+            return hex.toString();
         } catch (Exception e) {
-            throw new RuntimeException("Failed to hash token");
+            throw new RuntimeException(e);
         }
     }
 
