@@ -33,6 +33,8 @@ import com.aneesh.suraksha.users.dto.RefreshCheckCheckResponse;
 import com.aneesh.suraksha.users.dto.RefreshResponse;
 import com.aneesh.suraksha.users.dto.UserDto;
 import com.aneesh.suraksha.users.dto.RequestMetadata;
+import com.aneesh.suraksha.users.dto.TokenSubject;
+import com.aneesh.suraksha.users.dto.CreateRefreshTokenRequest;
 import com.aneesh.suraksha.users.dto.MagicLinkResult;
 import com.aneesh.suraksha.users.model.Organisations;
 import com.aneesh.suraksha.users.model.OrganisationsRepository;
@@ -62,11 +64,14 @@ public class UserController {
 
     private final RefreshTokenService refreshTokenService;
 
+    private final JwtService jwtService;
+
     public UserController(UserRepository userRepository, RegistrationService registrationService,
             LoginService loginService,
             OrganisationsRepository organisationsRepository, OrganisationOnboard organisationOnboard,
             ClientIPAddress clientIPAddress,
-            RefreshTokenService refreshTokenService, MagicUrlService magicUrlService, RefreshCheck refreshCheck) {
+            RefreshTokenService refreshTokenService, MagicUrlService magicUrlService, RefreshCheck refreshCheck,
+            JwtService jwtService) {
         this.userRepository = userRepository;
         this.registrationService = registrationService;
         this.loginService = loginService;
@@ -76,6 +81,7 @@ public class UserController {
         this.refreshTokenService = refreshTokenService;
         this.magicUrlService = magicUrlService;
         this.refreshCheck = refreshCheck;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/api/v1/auth/token/register")
@@ -106,7 +112,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+        String token = jwtService.generateToken(status.subject());
+        return ResponseEntity.ok(new RefreshResponse(token));
     }
 
     @PostMapping("/api/v1/auth/token/login")
