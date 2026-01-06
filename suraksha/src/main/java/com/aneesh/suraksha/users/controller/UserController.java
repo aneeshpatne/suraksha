@@ -36,6 +36,7 @@ import com.aneesh.suraksha.users.dto.RequestMetadata;
 import com.aneesh.suraksha.users.dto.TokenSubject;
 import com.aneesh.suraksha.users.dto.CreateRefreshTokenRequest;
 import com.aneesh.suraksha.users.dto.MagicLinkResult;
+import com.aneesh.suraksha.users.dto.LogoutResponse;
 import com.aneesh.suraksha.users.model.Organisations;
 import com.aneesh.suraksha.users.model.OrganisationsRepository;
 import com.aneesh.suraksha.users.model.UserEntity;
@@ -66,12 +67,14 @@ public class UserController {
 
     private final JwtService jwtService;
 
+    private final LogoutService logoutService;
+
     public UserController(UserRepository userRepository, RegistrationService registrationService,
             LoginService loginService,
             OrganisationsRepository organisationsRepository, OrganisationOnboard organisationOnboard,
             ClientIPAddress clientIPAddress,
             RefreshTokenService refreshTokenService, MagicUrlService magicUrlService, RefreshCheck refreshCheck,
-            JwtService jwtService) {
+            JwtService jwtService, LogoutService logoutService) {
         this.userRepository = userRepository;
         this.registrationService = registrationService;
         this.loginService = loginService;
@@ -82,6 +85,7 @@ public class UserController {
         this.magicUrlService = magicUrlService;
         this.refreshCheck = refreshCheck;
         this.jwtService = jwtService;
+        this.logoutService = logoutService;
     }
 
     @PostMapping("/api/v1/auth/token/register")
@@ -104,6 +108,21 @@ public class UserController {
         }
         return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.FORBIDDEN)
                 .body(new RegisterResponse(res.status(), res.message(), res.token(), res.refreshToken()));
+    }
+
+    @PostMapping("/api/v1/auth/token/logout")
+    public ResponseEntity<LogoutResponse> logout(
+            @CookieValue(name = "refresh_token", required = false) String rawToken) {
+        if (rawToken == null || rawToken.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new LogoutResponse(false, "No refresh token provided"));
+        }
+        Boolean success = logoutService.logout(rawToken);
+        if (success) {
+            return ResponseEntity.ok(new LogoutResponse(true, "Logged out successfully"));
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new LogoutResponse(false, "Failed to logout"));
     }
 
     @GetMapping("/api/v1/users")
