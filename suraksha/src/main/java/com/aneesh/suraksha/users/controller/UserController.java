@@ -43,6 +43,8 @@ import java.util.List;
 @RestController
 public class UserController {
 
+    private final RefreshCheck refreshCheck;
+
     private final MagicUrlService magicUrlService;
 
     private final ClientIPAddress clientIPAddress;
@@ -63,7 +65,7 @@ public class UserController {
             LoginService loginService,
             OrganisationsRepository organisationsRepository, OrganisationOnboard organisationOnboard,
             ClientIPAddress clientIPAddress,
-            RefreshTokenService refreshTokenService, MagicUrlService magicUrlService) {
+            RefreshTokenService refreshTokenService, MagicUrlService magicUrlService, RefreshCheck refreshCheck) {
         this.userRepository = userRepository;
         this.registrationService = registrationService;
         this.loginService = loginService;
@@ -72,6 +74,7 @@ public class UserController {
         this.clientIPAddress = clientIPAddress;
         this.refreshTokenService = refreshTokenService;
         this.magicUrlService = magicUrlService;
+        this.refreshCheck = refreshCheck;
     }
 
     @PostMapping("/api/v1/auth/token/register")
