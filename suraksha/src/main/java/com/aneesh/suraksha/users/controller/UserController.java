@@ -2,7 +2,6 @@ package com.aneesh.suraksha.users.controller;
 
 import com.aneesh.suraksha.users.service.*;
 
-import jakarta.servlet.http.Cookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;

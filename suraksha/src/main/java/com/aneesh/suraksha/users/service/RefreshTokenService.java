@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import com.aneesh.suraksha.config.AppSecretConfig;
 import com.aneesh.suraksha.users.dto.CreateRefreshTokenRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -17,20 +16,12 @@ public class RefreshTokenService {
 
     private final StringRedisTemplate stringRedisTemplate;
 
-    private final AppSecretConfig appSecretConfig;
-
-    private final com.aneesh.suraksha.users.model.RefreshTokenRepository refreshTokenRepository;
-
     private final ObjectMapper objectMapper;
 
     private final HashingService hashingService;
 
-    public RefreshTokenService(AppSecretConfig appSecretConfig,
-            com.aneesh.suraksha.users.model.RefreshTokenRepository refreshTokenRepository,
-            StringRedisTemplate stringRedisTemplate,
+    public RefreshTokenService(StringRedisTemplate stringRedisTemplate,
             HashingService hashingService) {
-        this.appSecretConfig = appSecretConfig;
-        this.refreshTokenRepository = refreshTokenRepository;
         this.stringRedisTemplate = stringRedisTemplate;
         this.objectMapper = new ObjectMapper();
         this.hashingService = hashingService;
