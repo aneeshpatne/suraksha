@@ -92,6 +92,16 @@ public class UserController {
         String userAgent = request.getHeader("User-Agent");
         RequestMetadata metaData = new RequestMetadata(ip, userAgent);
         RegisterResult res = registrationService.OnBoard(entity, metaData);
+        if (res.status()) {
+            ResponseCookie refreshToken = ResponseCookie.from("refresh_token", res.refreshToken())
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/")
+                    .sameSite("Strict")
+                    .maxAge(30 * 24 * 60 * 60)
+                    .build();
+            response.addHeader("Set-Cookie", refreshToken.toString());
+        }
         return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.FORBIDDEN)
                 .body(new RegisterResponse(res.status(), res.message(), res.token(), res.refreshToken()));
     }
