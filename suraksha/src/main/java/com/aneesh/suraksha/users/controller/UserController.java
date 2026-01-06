@@ -6,6 +6,7 @@ import jakarta.servlet.http.Cookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,7 @@ import com.aneesh.suraksha.users.dto.MagicLinkRequest;
 import com.aneesh.suraksha.users.dto.MagicLinkResponse;
 import com.aneesh.suraksha.users.dto.MagicLinkVerifyRequest;
 import com.aneesh.suraksha.users.dto.MagicLinkVerifyResponse;
+import com.aneesh.suraksha.users.dto.RefreshResponse;
 import com.aneesh.suraksha.users.dto.UserDto;
 import com.aneesh.suraksha.users.dto.RequestMetadata;
 import com.aneesh.suraksha.users.dto.MagicLinkResult;
@@ -90,7 +92,8 @@ public class UserController {
     }
 
     @PostMapping("/api/v1/auth/token/refresh")
-    public String postMethodName(@RequestBody String entity) {
+    public ResponseEntity<RefreshResponse> refresh(
+            @CookieValue(name = "refresh_token", required = false) String rawToken) {
         // TODO: process POST request
 
         return entity;
