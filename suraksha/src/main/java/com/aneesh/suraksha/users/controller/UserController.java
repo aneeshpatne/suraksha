@@ -2,6 +2,7 @@ package com.aneesh.suraksha.users.controller;
 
 import com.aneesh.suraksha.users.service.*;
 
+import jakarta.servlet.http.Cookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -94,9 +95,16 @@ public class UserController {
         String userAgent = request.getHeader("User-Agent");
         RequestMetadata metaData = new RequestMetadata(ip, userAgent);
         LoginResult res = loginService.login(entity, metaData);
-
+        if (res.status()) {
+            Cookie RefreshToken = new Cookie("authToken", res.refreshToken());
+            RefreshToken.setHttpOnly(true);
+            RefreshToken.setSecure(true);
+            RefreshToken.setPath("/");
+            RefreshToken.setMaxAge(30 * 24 * 60 * 60);
+            response.addCookie(RefreshToken);
+        }
         return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED)
-                .body(new LoginResponse(res.status(), res.message(), res.token(), res.refreshToken()));
+                .body(new LoginResponse(res.status(), res.message(), res.token()));
     }
 
     @PostMapping("/api/v1/organisations")
