@@ -32,8 +32,7 @@ import com.aneesh.suraksha.users.dto.RefreshCheckCheckResponse;
 import com.aneesh.suraksha.users.dto.RefreshResponse;
 import com.aneesh.suraksha.users.dto.UserDto;
 import com.aneesh.suraksha.users.dto.RequestMetadata;
-import com.aneesh.suraksha.users.dto.TokenSubject;
-import com.aneesh.suraksha.users.dto.CreateRefreshTokenRequest;
+
 import com.aneesh.suraksha.users.dto.MagicLinkResult;
 import com.aneesh.suraksha.users.dto.LogoutResponse;
 import com.aneesh.suraksha.users.model.Organisations;
@@ -62,8 +61,6 @@ public class UserController {
 
     private final OrganisationOnboard organisationOnboard;
 
-    private final RefreshTokenService refreshTokenService;
-
     private final JwtService jwtService;
 
     private final LogoutService logoutService;
@@ -80,7 +77,6 @@ public class UserController {
         this.organisationsRepository = organisationsRepository;
         this.organisationOnboard = organisationOnboard;
         this.clientIPAddress = clientIPAddress;
-        this.refreshTokenService = refreshTokenService;
         this.magicUrlService = magicUrlService;
         this.refreshCheck = refreshCheck;
         this.jwtService = jwtService;
