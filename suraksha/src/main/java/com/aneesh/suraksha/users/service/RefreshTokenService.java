@@ -1,19 +1,13 @@
 package com.aneesh.suraksha.users.service;
 
-import java.nio.charset.StandardCharsets;
-
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
 import com.aneesh.suraksha.config.AppSecretConfig;
 import com.aneesh.suraksha.users.dto.CreateRefreshTokenRequest;
-import com.aneesh.suraksha.users.model.RefreshToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -58,9 +52,11 @@ public class RefreshTokenService {
             String hashedToken = hashingService.sha256(token);
             String key = "rf_" + hashedToken;
 
-            // Create metadata map
+            // Create metadata map (same format as JWT claims for consistency)
             Map<String, Object> metadata = new HashMap<>();
-            metadata.put("userId", request.user().getId());
+            metadata.put("userId", request.subject().userId());
+            metadata.put("mailId", request.subject().mailId());
+            metadata.put("organisationId", request.subject().organisationId());
             metadata.put("ip", request.ip());
             metadata.put("userAgent", request.userAgent());
 

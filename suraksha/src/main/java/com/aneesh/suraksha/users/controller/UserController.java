@@ -101,7 +101,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         String status = refreshCheck.Check(rawToken);
-
+        // TODO: Implement refresh token validation logic
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
     }
 
     @PostMapping("/api/v1/auth/token/login")

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.aneesh.suraksha.users.dto.RegisterRequest;
 import com.aneesh.suraksha.users.dto.RegisterResult;
 import com.aneesh.suraksha.users.dto.CreateRefreshTokenRequest;
+import com.aneesh.suraksha.users.dto.TokenSubject;
 import com.aneesh.suraksha.users.dto.RequestMetadata;
 import com.aneesh.suraksha.users.model.UserEntity;
 import com.aneesh.suraksha.users.model.UserRepository;
@@ -53,9 +54,10 @@ public class RegistrationService {
             String hashedPassword = passwordEncoder.encode(entity.password());
             user.setPassword(hashedPassword);
             userRepository.save(user);
-            String token = jwtService.generateToken(user);
+            TokenSubject subject = TokenSubject.fromUser(user);
+            String token = jwtService.generateToken(subject);
             String refreshToken = refreshTokenService
-                    .generate(new CreateRefreshTokenRequest(user, metaData.ip(), metaData.userAgent()));
+                    .generate(new CreateRefreshTokenRequest(subject, metaData.ip(), metaData.userAgent()));
             return new RegisterResult(true, "User Created Successfully", token, refreshToken, user);
         } catch (Exception e) {
             return new RegisterResult(false, "An error occurred during registration", null, null, null);

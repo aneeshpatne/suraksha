@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.aneesh.suraksha.users.dto.LoginRequest;
 import com.aneesh.suraksha.users.dto.LoginResult;
 import com.aneesh.suraksha.users.dto.CreateRefreshTokenRequest;
+import com.aneesh.suraksha.users.dto.TokenSubject;
 import com.aneesh.suraksha.users.dto.RequestMetadata;
 import com.aneesh.suraksha.users.model.UserEntity;
 import com.aneesh.suraksha.users.model.UserRepository;
@@ -51,9 +52,10 @@ public class LoginService {
                 return new LoginResult(false, "Invalid credentials", null, null, null);
             }
 
-            String token = jwtService.generateToken(user);
+            TokenSubject subject = TokenSubject.fromUser(user);
+            String token = jwtService.generateToken(subject);
             String refreshToken = refreshTokenService
-                    .generate(new CreateRefreshTokenRequest(user, metaData.ip(), metaData.userAgent()));
+                    .generate(new CreateRefreshTokenRequest(subject, metaData.ip(), metaData.userAgent()));
             return new LoginResult(true, "Success", token, refreshToken, user);
         } catch (Exception e) {
             logger.error("Error during login for user: {}", request.mailId(), e);

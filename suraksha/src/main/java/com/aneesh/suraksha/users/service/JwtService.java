@@ -11,7 +11,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.aneesh.suraksha.config.AppSecretConfig;
-import com.aneesh.suraksha.users.model.UserEntity;
+import com.aneesh.suraksha.users.dto.TokenSubject;
 
 import io.jsonwebtoken.Jwts;
 
@@ -42,22 +42,22 @@ public class JwtService {
         }
     }
 
-    public String generateToken(UserEntity userEntity) {
-        return generateToken(Map.of(), userEntity);
+    public String generateToken(TokenSubject subject) {
+        return generateToken(Map.of(), subject);
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserEntity userEntity) {
+    public String generateToken(Map<String, Object> extraClaims, TokenSubject subject) {
         long now = System.currentTimeMillis();
-        long expirationMs = 1 * 60 * 1000; // 15 min
+        long expirationMs = 1 * 60 * 1000; // 1 min
 
         Map<String, Object> claims = new HashMap<>(extraClaims);
-        claims.put("userId", userEntity.getId());
-        claims.put("mailId", userEntity.getMailId());
-        claims.put("organisationId", userEntity.getOrganisations().getId());
+        claims.put("userId", subject.userId());
+        claims.put("mailId", subject.mailId());
+        claims.put("organisationId", subject.organisationId());
 
         return Jwts.builder()
                 .claims(claims)
-                .subject(userEntity.getMailId())
+                .subject(subject.mailId())
                 .issuedAt(new Date(now))
                 .expiration(new Date(now + expirationMs))
                 .signWith(getSigningKey(), Jwts.SIG.RS256)
