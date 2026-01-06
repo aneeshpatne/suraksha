@@ -100,6 +100,7 @@ public class UserController {
         if (rawToken == null || rawToken.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        String status = refreshCheck.Check(rawToken);
 
     }
 
