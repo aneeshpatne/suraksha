@@ -4,6 +4,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.crypto.Mac;
@@ -12,6 +14,7 @@ import javax.crypto.spec.SecretKeySpec;
 import com.aneesh.suraksha.config.AppSecretConfig;
 import com.aneesh.suraksha.users.dto.CreateRefreshTokenRequest;
 import com.aneesh.suraksha.users.model.RefreshToken;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +27,15 @@ public class RefreshTokenService {
 
     private final com.aneesh.suraksha.users.model.RefreshTokenRepository refreshTokenRepository;
 
+    private final ObjectMapper objectMapper;
+
     public RefreshTokenService(AppSecretConfig appSecretConfig,
             com.aneesh.suraksha.users.model.RefreshTokenRepository refreshTokenRepository,
             StringRedisTemplate stringRedisTemplate) {
         this.appSecretConfig = appSecretConfig;
         this.refreshTokenRepository = refreshTokenRepository;
         this.stringRedisTemplate = stringRedisTemplate;
+        this.objectMapper = new ObjectMapper();
     }
 
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
@@ -56,12 +62,26 @@ public class RefreshTokenService {
     }
 
     public String generate(CreateRefreshTokenRequest request) {
-        String token = IssueRefreshToken();
-        String hashedToken = hashToken(token);
-        String key = "rf_" + hashedToken;
-        stringRedisTemplate.opsForValue().set(key, "dummy", 30, TimeUnit.MINUTES);
+        try {
+            String token = IssueRefreshToken();
+            String hashedToken = hashToken(token);
+            String key = "rf_" + hashedToken;
 
-        return token;
+            // Create metadata map
+            Map<String, Object> metadata = new HashMap<>();
+            metadata.put("userId", request.user().getId());
+            metadata.put("ip", request.ip());
+            metadata.put("userAgent", request.userAgent());
+
+            // Serialize to JSON
+            String metadataJson = objectMapper.writeValueAsString(metadata);
+
+            stringRedisTemplate.opsForValue().set(key, metadataJson, 30, TimeUnit.MINUTES);
+
+            return token;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate refresh token", e);
+        }
     }
 
 }
