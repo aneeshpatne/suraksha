@@ -89,6 +89,13 @@ public class UserController {
         return userRepository.findAllUsersAsDto();
     }
 
+    @PostMapping("/api/v1/auth/token/refresh")
+    public String postMethodName(@RequestBody String entity) {
+        // TODO: process POST request
+
+        return entity;
+    }
+
     @PostMapping("/api/v1/auth/token/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest entity, HttpServletResponse response,
             HttpServletRequest request) {
