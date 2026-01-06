@@ -29,6 +29,7 @@ import com.aneesh.suraksha.users.dto.MagicLinkRequest;
 import com.aneesh.suraksha.users.dto.MagicLinkResponse;
 import com.aneesh.suraksha.users.dto.MagicLinkVerifyRequest;
 import com.aneesh.suraksha.users.dto.MagicLinkVerifyResponse;
+import com.aneesh.suraksha.users.dto.RefreshCheckCheckResponse;
 import com.aneesh.suraksha.users.dto.RefreshResponse;
 import com.aneesh.suraksha.users.dto.UserDto;
 import com.aneesh.suraksha.users.dto.RequestMetadata;
@@ -100,8 +101,11 @@ public class UserController {
         if (rawToken == null || rawToken.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        String status = refreshCheck.Check(rawToken);
-        // TODO: Implement refresh token validation logic
+        RefreshCheckCheckResponse status = refreshCheck.Check(rawToken);
+        if (!status.status()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
     }
 
