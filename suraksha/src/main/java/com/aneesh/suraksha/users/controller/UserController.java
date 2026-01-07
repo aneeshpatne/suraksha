@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -141,7 +142,8 @@ public class UserController {
     }
 
     @PostMapping("/api/v1/auth/token/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest entity, HttpServletResponse response,
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest entity,
+            @RequestParam(required = false, name = "redirect") String redirect, HttpServletResponse response,
             HttpServletRequest request) {
         String ip = clientIPAddress.getIP(request);
         String userAgent = request.getHeader("User-Agent");
@@ -157,8 +159,11 @@ public class UserController {
                     .build();
             response.addHeader("Set-Cookie", refreshToken.toString());
         }
-        return ResponseEntity.status(res.status() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED)
-                .body(new LoginResponse(res.status(), res.message(), res.token()));
+        String redirectUrl = (redirect != null && !redirect.isBlank()) ? redirect : "/";
+        return ResponseEntity
+                .status(HttpStatus.FOUND)
+                .header("Location", redirectUrl)
+                .build();
     }
 
     @PostMapping("/api/v1/organisations")
