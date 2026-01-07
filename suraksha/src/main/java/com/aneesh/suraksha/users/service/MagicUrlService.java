@@ -14,12 +14,15 @@ import com.aneesh.suraksha.dto.MailDto;
 import com.aneesh.suraksha.users.dto.MagicLinkTokenPayload;
 import com.aneesh.suraksha.users.dto.TokenSubject;
 import com.aneesh.suraksha.users.dto.RequestMetadata;
+import com.aneesh.suraksha.users.dto.CreateRefreshTokenRequest;
 import com.aneesh.suraksha.users.dto.MagicLinkResult;
 import com.aneesh.suraksha.users.model.UserEntity;
 import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class MagicUrlService {
+
+    private final RefreshTokenService refreshTokenService;
 
     private final JwtService jwtService;
     public static final SecureRandom secureRandom = new SecureRandom();
@@ -28,11 +31,12 @@ public class MagicUrlService {
     private final RabbitTemplate rabbitTemplate;
 
     public MagicUrlService(StringRedisTemplate stringRedisTemplate, ObjectMapper objectMapper,
-            RabbitTemplate rabbitTemplate, JwtService jwtService) {
+            RabbitTemplate rabbitTemplate, JwtService jwtService, RefreshTokenService refreshTokenService) {
         this.stringRedisTemplate = stringRedisTemplate;
         this.objectMapper = objectMapper;
         this.rabbitTemplate = rabbitTemplate;
         this.jwtService = jwtService;
+        this.refreshTokenService = refreshTokenService;
     }
 
     private String generateRandomMagicBytes() {
@@ -69,12 +73,14 @@ public class MagicUrlService {
         try {
             String json = stringRedisTemplate.opsForValue().get("magic:" + token);
             if (json == null) {
-                return new MagicLinkResult(false, null);
+                return new MagicLinkResult(false, null, null);
             }
             TokenSubject data = objectMapper.readValue(json, TokenSubject.class);
             String jwt = jwtService.generateToken(data);
             stringRedisTemplate.delete("magic:" + token);
-            return new MagicLinkResult(true, jwt);
+            String refresh_token = refreshTokenService
+                    .generate(new CreateRefreshTokenRequest(data, metaData.ip(), metaData.userAgent()));
+            return new MagicLinkResult(true, jwt, refresh_token);
         } catch (Exception e) {
             throw new RuntimeException("Failed to verify magic URL", e);
         }
