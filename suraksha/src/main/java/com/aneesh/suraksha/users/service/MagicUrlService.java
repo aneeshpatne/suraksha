@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.aneesh.suraksha.dto.MailDto;
 import com.aneesh.suraksha.users.dto.MagicLinkTokenPayload;
+import com.aneesh.suraksha.users.dto.TokenSubject;
 import com.aneesh.suraksha.users.dto.MagicLinkResult;
 import com.aneesh.suraksha.users.model.UserEntity;
 import tools.jackson.databind.ObjectMapper;
@@ -42,7 +43,7 @@ public class MagicUrlService {
         try {
             String magicUrl = generateRandomMagicBytes();
             String key = "magic:" + magicUrl;
-            MagicLinkTokenPayload payload = new MagicLinkTokenPayload(user.getId(), System.currentTimeMillis());
+            TokenSubject payload = new TokenSubject(user.getId(), user.getMailId(), user.getOrganisations().getId());
             String json = objectMapper.writeValueAsString(payload);
             stringRedisTemplate.opsForValue().set(key, json, Duration.ofMinutes(10));
 
