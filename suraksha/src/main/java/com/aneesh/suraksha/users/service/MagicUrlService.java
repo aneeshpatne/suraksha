@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.aneesh.suraksha.dto.MailDto;
 import com.aneesh.suraksha.users.dto.MagicLinkTokenPayload;
 import com.aneesh.suraksha.users.dto.TokenSubject;
+import com.aneesh.suraksha.users.dto.RequestMetadata;
 import com.aneesh.suraksha.users.dto.MagicLinkResult;
 import com.aneesh.suraksha.users.model.UserEntity;
 import tools.jackson.databind.ObjectMapper;
@@ -64,15 +65,19 @@ public class MagicUrlService {
         }
     }
 
-    public MagicLinkResult verifySendMagicUrl(String token, String ip, String userAgent) {
-        String json = stringRedisTemplate.opsForValue().get("magic:" + token);
-        if (json == null) {
-            return new MagicLinkResult(false, null);
+    public MagicLinkResult verifySendMagicUrl(String token, RequestMetadata metaData) {
+        try {
+            String json = stringRedisTemplate.opsForValue().get("magic:" + token);
+            if (json == null) {
+                return new MagicLinkResult(false, null);
+            }
+            TokenSubject data = objectMapper.readValue(json, TokenSubject.class);
+            String jwt = jwtService.generateToken(data);
+            stringRedisTemplate.delete("magic:" + token);
+            return new MagicLinkResult(true, jwt);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to verify magic URL", e);
         }
-        TokenSubject data = objectMapper.readValue(json, TokenSubject.class);
-        String jwt = jwtService.generateToken(data);
-        stringRedisTemplate.delete("magic:" + token);
-        return new MagicLinkResult(true, jwt);
     }
 
     private String generateEmailBody(String magicLink) {

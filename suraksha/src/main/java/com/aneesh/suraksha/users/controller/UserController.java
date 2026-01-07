@@ -178,8 +178,12 @@ public class UserController {
     }
 
     @GetMapping("/api/v1/verify-magic-url")
-    public ResponseEntity<MagicLinkVerifyResponse> verifyMagicURL(@ModelAttribute MagicLinkVerifyRequest param) {
-        MagicLinkResult res = magicUrlService.verifySendMagicUrl(param.token());
+    public ResponseEntity<MagicLinkVerifyResponse> verifyMagicURL(@ModelAttribute MagicLinkVerifyRequest param,
+            HttpServletRequest request) {
+        String ip = clientIPAddress.getIP(request);
+        String userAgent = request.getHeader("User-Agent");
+        RequestMetadata metaData = new RequestMetadata(ip, userAgent);
+        MagicLinkResult res = magicUrlService.verifySendMagicUrl(param.token(), metaData);
         if (!res.status()) {
             return ResponseEntity.badRequest().body(new MagicLinkVerifyResponse(null, false));
         }
