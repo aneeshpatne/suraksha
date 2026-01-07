@@ -19,16 +19,19 @@ import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class MagicUrlService {
+
+    private final JwtService jwtService;
     public static final SecureRandom secureRandom = new SecureRandom();
     private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper;
     private final RabbitTemplate rabbitTemplate;
 
     public MagicUrlService(StringRedisTemplate stringRedisTemplate, ObjectMapper objectMapper,
-            RabbitTemplate rabbitTemplate) {
+            RabbitTemplate rabbitTemplate, JwtService jwtService) {
         this.stringRedisTemplate = stringRedisTemplate;
         this.objectMapper = objectMapper;
         this.rabbitTemplate = rabbitTemplate;
+        this.jwtService = jwtService;
     }
 
     private String generateRandomMagicBytes() {
@@ -66,9 +69,10 @@ public class MagicUrlService {
         if (json == null) {
             return new MagicLinkResult(false, null);
         }
-        MagicLinkTokenPayload payload = objectMapper.readValue(json, MagicLinkTokenPayload.class);
+        TokenSubject data = objectMapper.readValue(json, TokenSubject.class);
+        String jwt = jwtService.generateToken(data);
         stringRedisTemplate.delete("magic:" + token);
-        return new MagicLinkResult(true, payload.userId());
+        return new MagicLinkResult(true, jwt);
     }
 
     private String generateEmailBody(String magicLink) {
