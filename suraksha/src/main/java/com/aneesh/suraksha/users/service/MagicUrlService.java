@@ -73,14 +73,14 @@ public class MagicUrlService {
         try {
             String json = stringRedisTemplate.opsForValue().get("magic:" + token);
             if (json == null) {
-                return new MagicLinkResult(false, null, null);
+                return new MagicLinkResult(false, null, null, null);
             }
             TokenSubject data = objectMapper.readValue(json, TokenSubject.class);
             String jwt = jwtService.generateToken(data);
             stringRedisTemplate.delete("magic:" + token);
             String refresh_token = refreshTokenService
                     .generate(new CreateRefreshTokenRequest(data, metaData.ip(), metaData.userAgent()));
-            return new MagicLinkResult(true, jwt, refresh_token);
+            return new MagicLinkResult(true, data.userId(), jwt, refresh_token);
         } catch (Exception e) {
             throw new RuntimeException("Failed to verify magic URL", e);
         }

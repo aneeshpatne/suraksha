@@ -179,15 +179,23 @@ public class UserController {
 
     @GetMapping("/api/v1/verify-magic-url")
     public ResponseEntity<MagicLinkVerifyResponse> verifyMagicURL(@ModelAttribute MagicLinkVerifyRequest param,
-            HttpServletRequest request) {
+            HttpServletRequest request, HttpServletResponse response) {
         String ip = clientIPAddress.getIP(request);
         String userAgent = request.getHeader("User-Agent");
         RequestMetadata metaData = new RequestMetadata(ip, userAgent);
         MagicLinkResult res = magicUrlService.verifySendMagicUrl(param.token(), metaData);
         if (!res.status()) {
-            return ResponseEntity.badRequest().body(new MagicLinkVerifyResponse(null, false));
+            return ResponseEntity.badRequest().body(new MagicLinkVerifyResponse(null, null, false));
         }
-        return ResponseEntity.ok().body(new MagicLinkVerifyResponse(res.userId(), true));
+        ResponseCookie refreshToken = ResponseCookie.from("refresh_token", res.refreshToken())
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .sameSite("Strict")
+                .maxAge(30 * 24 * 60 * 60)
+                .build();
+        response.addHeader("Set-Cookie", refreshToken.toString());
+        return ResponseEntity.ok().body(new MagicLinkVerifyResponse(res.userId(), res.jwt(), true));
     }
 
     @GetMapping("/api/v1/organisations")
