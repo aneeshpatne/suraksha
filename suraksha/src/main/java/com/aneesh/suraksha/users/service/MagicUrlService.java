@@ -64,7 +64,7 @@ public class MagicUrlService {
         }
     }
 
-    public MagicLinkResult verifySendMagicUrl(String token) {
+    public MagicLinkResult verifySendMagicUrl(String token, String ip, String userAgent) {
         String json = stringRedisTemplate.opsForValue().get("magic:" + token);
         if (json == null) {
             return new MagicLinkResult(false, null);
