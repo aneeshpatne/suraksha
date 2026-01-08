@@ -46,6 +46,8 @@ import java.util.List;
 @RestController
 public class UserController {
 
+    private final ValidRedirectService validRedirectService;
+
     private final RefreshCheck refreshCheck;
 
     private final MagicUrlService magicUrlService;
@@ -71,7 +73,7 @@ public class UserController {
             OrganisationsRepository organisationsRepository, OrganisationOnboard organisationOnboard,
             ClientIPAddress clientIPAddress,
             RefreshTokenService refreshTokenService, MagicUrlService magicUrlService, RefreshCheck refreshCheck,
-            JwtService jwtService, LogoutService logoutService) {
+            JwtService jwtService, LogoutService logoutService, ValidRedirectService validRedirectService) {
         this.userRepository = userRepository;
         this.registrationService = registrationService;
         this.loginService = loginService;
@@ -82,6 +84,7 @@ public class UserController {
         this.refreshCheck = refreshCheck;
         this.jwtService = jwtService;
         this.logoutService = logoutService;
+        this.validRedirectService = validRedirectService;
     }
 
     @PostMapping("/api/v1/auth/register")
@@ -145,6 +148,7 @@ public class UserController {
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest entity,
             @RequestParam(required = false, name = "redirect") String redirect, HttpServletResponse response,
             HttpServletRequest request) {
+        Boolean isRedirectAllowed = validRedirectService.validate(entity.organisationId(), redirect);
         String ip = clientIPAddress.getIP(request);
         String userAgent = request.getHeader("User-Agent");
         RequestMetadata metaData = new RequestMetadata(ip, userAgent);
