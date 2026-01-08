@@ -70,7 +70,7 @@ suraksha/
 #### Register User
 
 ```http
-POST /api/v1/auth/token/register
+POST /api/v1/auth/register
 Content-Type: application/json
 
 {
@@ -97,7 +97,7 @@ Content-Type: application/json
 #### Login
 
 ```http
-POST /api/v1/auth/token/login
+POST /api/v1/auth/login
 Content-Type: application/json
 
 {

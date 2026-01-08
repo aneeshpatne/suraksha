@@ -84,7 +84,7 @@ public class UserController {
         this.logoutService = logoutService;
     }
 
-    @PostMapping("/api/v1/auth/token/register")
+    @PostMapping("/api/v1/auth/register")
     public ResponseEntity<RegisterResponse> createUser(@RequestBody RegisterRequest entity,
             HttpServletResponse response,
             HttpServletRequest request) {
@@ -106,7 +106,7 @@ public class UserController {
                 .body(new RegisterResponse(res.status(), res.message(), res.token(), res.refreshToken()));
     }
 
-    @PostMapping("/api/v1/auth/token/logout")
+    @PostMapping("/api/v1/auth/logout")
     public ResponseEntity<LogoutResponse> logout(
             @CookieValue(name = "refresh_token", required = false) String rawToken) {
         if (rawToken == null || rawToken.isEmpty()) {
@@ -126,7 +126,7 @@ public class UserController {
         return userRepository.findAllUsersAsDto();
     }
 
-    @PostMapping("/api/v1/auth/token/refresh")
+    @PostMapping("/api/v1/auth/refresh")
     public ResponseEntity<RefreshResponse> refresh(
             @CookieValue(name = "refresh_token", required = false) String rawToken) {
         if (rawToken == null || rawToken.isEmpty()) {
@@ -141,7 +141,7 @@ public class UserController {
         return ResponseEntity.ok(new RefreshResponse(token));
     }
 
-    @PostMapping("/api/v1/auth/token/login")
+    @PostMapping("/api/v1/auth/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest entity,
             @RequestParam(required = false, name = "redirect") String redirect, HttpServletResponse response,
             HttpServletRequest request) {
