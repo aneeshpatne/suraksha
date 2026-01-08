@@ -146,9 +146,12 @@ public class UserController {
 
     @PostMapping("/api/v1/auth/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest entity,
-            @RequestParam(required = false, name = "redirect") String redirect, HttpServletResponse response,
+            @RequestParam(required = false) String redirect, HttpServletResponse response,
             HttpServletRequest request) {
         Boolean isRedirectAllowed = validRedirectService.validate(entity.organisationId(), redirect);
+        if (!isRedirectAllowed) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         String ip = clientIPAddress.getIP(request);
         String userAgent = request.getHeader("User-Agent");
         RequestMetadata metaData = new RequestMetadata(ip, userAgent);
