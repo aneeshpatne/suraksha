@@ -31,6 +31,7 @@ import com.aneesh.suraksha.users.dto.MagicLinkRequest;
 import com.aneesh.suraksha.users.dto.MagicLinkResponse;
 import com.aneesh.suraksha.users.dto.MagicLinkVerifyRequest;
 import com.aneesh.suraksha.users.dto.MagicLinkVerifyResponse;
+import com.aneesh.suraksha.users.dto.OTPRequest;
 import com.aneesh.suraksha.users.dto.RefreshCheckCheckResponse;
 import com.aneesh.suraksha.users.dto.RefreshResponse;
 import com.aneesh.suraksha.users.dto.UserDto;
@@ -156,6 +157,13 @@ public class UserController {
                 .build();
         response.addHeader("Set-Cookie", jwtCookie.toString());
         return ResponseEntity.ok(new RefreshResponse(token));
+    }
+
+    @PostMapping("/api/v1/auth/2fa/otp")
+    public String postMethodName(@RequestBody OTPRequest entity) {
+        // TODO: process POST request
+
+        return entity;
     }
 
     @PostMapping("/api/v1/auth/login")
