@@ -8,16 +8,20 @@ import com.aneesh.suraksha.users.dto.TokenSubject;
 @Service
 public class TwofactorService {
 
+    private final OtpService otpService;
+
     private final ObjectMapper objectMapper;
 
     private final StringRedisTemplate stringRedisTemplate;
 
-    public TwofactorService(StringRedisTemplate stringRedisTemplate, ObjectMapper objectMapper) {
+    public TwofactorService(StringRedisTemplate stringRedisTemplate, ObjectMapper objectMapper, OtpService otpService) {
         this.stringRedisTemplate = stringRedisTemplate;
         this.objectMapper = objectMapper;
+        this.otpService = otpService;
     }
 
     public Boolean Generate(TokenSubject tokenSubject) {
+        String otp = otpService.
 
     }
 

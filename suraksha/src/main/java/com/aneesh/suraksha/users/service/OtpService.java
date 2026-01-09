@@ -21,7 +21,7 @@ public class OtpService {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    private String generateOtp() {
+    public String generateOtp() {
         int randomNumber = 1000 + secureRandom.nextInt(9000);
         return Integer.toString(randomNumber);
     }
