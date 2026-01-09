@@ -171,6 +171,32 @@ public class UserController {
         if (token == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+        String ip = clientIPAddress.getIP(request);
+        String userAgent = request.getHeader("User-Agent");
+        String jwt = jwtService.generateToken(token);
+        String refreshToken = refreshTokenService.generate(
+                new CreateRefreshTokenRequest(token, ip, userAgent));
+
+        ResponseCookie jwtCookie = ResponseCookie.from("jwt", jwt)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .sameSite("Strict")
+                .maxAge(1 * 60)
+                .build();
+        ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .sameSite("Strict")
+                .maxAge(30 * 24 * 60 * 60)
+                .build();
+        String redirectUrl = (redirect != null && !redirect.isBlank()) ? redirect : "/";
+        return ResponseEntity
+                .status(HttpStatus.FOUND)
+                .header(HttpHeaders.SET_COOKIE, jwtCookie.toString(), refreshCookie.toString())
+                .header(HttpHeaders.LOCATION, redirectUrl)
+                .build();
 
     }
 
