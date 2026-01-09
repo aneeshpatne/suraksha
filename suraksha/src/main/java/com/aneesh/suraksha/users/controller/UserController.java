@@ -37,6 +37,8 @@ import com.aneesh.suraksha.users.dto.RefreshCheckCheckResponse;
 import com.aneesh.suraksha.users.dto.RefreshResponse;
 import com.aneesh.suraksha.users.dto.UserDto;
 import com.aneesh.suraksha.users.dto.RequestMetadata;
+import com.aneesh.suraksha.users.dto.ResetPasswordRequest;
+import com.aneesh.suraksha.users.dto.ResetPasswordResponse;
 import com.aneesh.suraksha.users.dto.TokenSubject;
 import com.aneesh.suraksha.users.dto.MagicLinkResult;
 import com.aneesh.suraksha.users.dto.LogoutResponse;
@@ -251,6 +253,12 @@ public class UserController {
     public CreateOrganizationResponse registerOrganisation(@RequestBody CreateOrganizationRequest entity) {
         CreateOrganizationResponse res = organisationOnboard.OnBoard(entity);
         return res;
+
+    }
+
+    @PostMapping("/api/v1/auth/forgot-password")
+    public ResponseEntity<ResetPasswordResponse> ForgotPassword(@RequestBody ResetPasswordRequest entity) {
+        UserEntity user = userRepository.findByMailId(entity.mailId());
 
     }
 
