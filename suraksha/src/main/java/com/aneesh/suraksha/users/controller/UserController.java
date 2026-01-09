@@ -166,7 +166,7 @@ public class UserController {
 
     @PostMapping("/api/v1/auth/2fa/otp")
     public ResponseEntity<OTPResponse> OTPVerify(@RequestBody OTPRequest entity, HttpServletResponse response,
-            HttpServletRequest request) {
+            HttpServletRequest request, @RequestParam(required = false) String redirect) {
         TokenSubject token = twofactorService.Validate(entity.OTP());
         if (token == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
