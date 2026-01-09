@@ -167,7 +167,7 @@ public class UserController {
         }
 
         AuthResult authResult = loginService.authenticate(entity);
-        if (!authResult.success()) {
+        if (!authResult.status().equals("true")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
