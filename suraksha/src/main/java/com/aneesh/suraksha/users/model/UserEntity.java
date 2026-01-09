@@ -21,6 +21,7 @@ public class UserEntity {
 
     private String mailId;
     private String password;
+    private String twoFaType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organisation_id", nullable = false)
@@ -51,6 +52,14 @@ public class UserEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getTwoFaType() {
+        return twoFaType;
+    }
+
+    public void setTwoFaType(String twoFaType) {
+        this.twoFaType = twoFaType;
     }
 
     public Organisations getOrganisations() {
