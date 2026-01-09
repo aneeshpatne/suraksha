@@ -23,12 +23,15 @@ public class TwofactorService {
 
     private final MailSenderService mailSenderService;
 
+    private final EmailTemplateService emailTemplateService;
+
     public TwofactorService(StringRedisTemplate stringRedisTemplate, ObjectMapper objectMapper, OtpService otpService,
-            MailSenderService mailSenderService) {
+            MailSenderService mailSenderService, EmailTemplateService emailTemplateService) {
         this.stringRedisTemplate = stringRedisTemplate;
         this.objectMapper = objectMapper;
         this.otpService = otpService;
         this.mailSenderService = mailSenderService;
+        this.emailTemplateService = emailTemplateService;
     }
 
     private String RandomKeyGenerator() {
@@ -46,7 +49,8 @@ public class TwofactorService {
                     .set("2fa:" + key,
                             objectMapper.writeValueAsString(data), 2, TimeUnit.MINUTES);
 
-            MailDto mailDto = new MailDto(tokenSubject.mailId(), "Suraksha OTP", "Your OTP is: " + otp);
+            String emailBody = emailTemplateService.generateOtpEmail(otp);
+            MailDto mailDto = new MailDto(tokenSubject.mailId(), "Suraksha OTP", emailBody);
             mailSenderService.send(mailDto);
 
             return key;
