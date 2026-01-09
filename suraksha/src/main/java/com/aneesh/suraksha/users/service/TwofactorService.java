@@ -55,4 +55,20 @@ public class TwofactorService {
         }
     }
 
+    public TokenSubject Validate(String key) {
+        String redisKey = "2fa:" + key;
+        String user = stringRedisTemplate.opsForValue().get(redisKey);
+
+        if (user == null) {
+            return null;
+        }
+
+        try {
+            TwoFactorAuthData data = objectMapper.readValue(user, TwoFactorAuthData.class);
+            return data.tokenSubject();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to deserialize 2FA data", e);
+        }
+    }
+
 }

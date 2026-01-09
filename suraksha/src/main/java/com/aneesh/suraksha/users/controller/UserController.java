@@ -161,10 +161,8 @@ public class UserController {
     }
 
     @PostMapping("/api/v1/auth/2fa/otp")
-    public ResponseEntity<OTPResponse> postMethodName(@RequestBody OTPRequest entity) {
-        // TODO: process POST request
+    public ResponseEntity<OTPResponse> OTPVerify(@RequestBody OTPRequest entity) {
 
-        return entity;
     }
 
     @PostMapping("/api/v1/auth/login")
