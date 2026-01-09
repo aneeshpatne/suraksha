@@ -167,6 +167,10 @@ public class UserController {
         }
 
         AuthResult authResult = loginService.authenticate(entity);
+        if (authResult.status().equals("2fa")) {
+            return ResponseEntity.status(HttpStatus.ACCEPTED)
+                    .body(new LoginResponse("2fa", "Two-factor authentication required", authResult.token()));
+        }
         if (!authResult.status().equals("true")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
