@@ -5,20 +5,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.aneesh.suraksha.users.dto.AuthResult;
 import com.aneesh.suraksha.users.dto.LoginRequest;
-import com.aneesh.suraksha.users.dto.LoginResult;
-import com.aneesh.suraksha.users.dto.CreateRefreshTokenRequest;
 import com.aneesh.suraksha.users.dto.TokenSubject;
-import com.aneesh.suraksha.users.dto.RequestMetadata;
 import com.aneesh.suraksha.users.model.UserEntity;
 import com.aneesh.suraksha.users.model.UserRepository;
 
 @Service
 public class LoginService {
-
-    private final RefreshTokenService refreshTokenService;
-
-    private final JwtService jwtService;
 
     private static final Logger logger = LoggerFactory.getLogger(LoginService.class);
 
@@ -26,36 +20,30 @@ public class LoginService {
 
     private final UserRepository userRepository;
 
-    public LoginService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService,
-            RefreshTokenService refreshTokenService) {
+    public LoginService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-        this.refreshTokenService = refreshTokenService;
     }
 
-    public LoginResult login(LoginRequest request, RequestMetadata metaData) {
+    public AuthResult authenticate(LoginRequest request) {
         try {
             UserEntity user = userRepository.findByMailId(request.mailId());
             if (user == null) {
-                return new LoginResult(false, "Invalid credentials", null, null, null);
+                return AuthResult.failure("Invalid credentials");
             }
             if (user.getOrganisations() == null || !user.getOrganisations().getId().equals(request.organisationId())) {
-                return new LoginResult(false, "Invalid credentials", null, null, null);
+                return AuthResult.failure("Invalid credentials");
             }
             boolean match = passwordEncoder.matches(request.password(), user.getPassword());
             if (!match) {
-                return new LoginResult(false, "Invalid credentials", null, null, null);
+                return AuthResult.failure("Invalid credentials");
             }
 
             TokenSubject subject = TokenSubject.fromUser(user);
-            String token = jwtService.generateToken(subject);
-            String refreshToken = refreshTokenService
-                    .generate(new CreateRefreshTokenRequest(subject, metaData.ip(), metaData.userAgent()));
-            return new LoginResult(true, "Success", token, refreshToken, user);
+            return AuthResult.success(subject);
         } catch (Exception e) {
-            logger.error("Error during login for user: {}", request.mailId(), e);
-            return new LoginResult(false, "Invalid credentials", null, null, null);
+            logger.error("Error during authentication for user: {}", request.mailId(), e);
+            return AuthResult.failure("Invalid credentials");
         }
     }
 }

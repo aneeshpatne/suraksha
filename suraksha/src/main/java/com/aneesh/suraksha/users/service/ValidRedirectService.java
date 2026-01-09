@@ -15,7 +15,6 @@ public class ValidRedirectService {
     public boolean validate(String organisationId, String redirect) {
         Boolean isValid = stringRedisTemplate.opsForSet().isMember("org:redirect:" + organisationId, redirect);
         return isValid;
-
     }
 
 }

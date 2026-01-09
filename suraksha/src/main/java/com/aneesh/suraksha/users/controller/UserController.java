@@ -17,9 +17,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import com.aneesh.suraksha.users.component.ClientIPAddress;
+import com.aneesh.suraksha.users.dto.AuthResult;
+import com.aneesh.suraksha.users.dto.CreateRefreshTokenRequest;
 import com.aneesh.suraksha.users.dto.LoginRequest;
 import com.aneesh.suraksha.users.dto.LoginResponse;
-import com.aneesh.suraksha.users.dto.LoginResult;
 import com.aneesh.suraksha.users.dto.CreateOrganizationRequest;
 import com.aneesh.suraksha.users.dto.CreateOrganizationResponse;
 import com.aneesh.suraksha.users.dto.RegisterRequest;
@@ -66,6 +67,8 @@ public class UserController {
 
     private final JwtService jwtService;
 
+    private final RefreshTokenService refreshTokenService;
+
     private final LogoutService logoutService;
 
     public UserController(UserRepository userRepository, RegistrationService registrationService,
@@ -83,6 +86,7 @@ public class UserController {
         this.magicUrlService = magicUrlService;
         this.refreshCheck = refreshCheck;
         this.jwtService = jwtService;
+        this.refreshTokenService = refreshTokenService;
         this.logoutService = logoutService;
         this.validRedirectService = validRedirectService;
     }
@@ -152,21 +156,27 @@ public class UserController {
         if (!isRedirectAllowed) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        String ip = clientIPAddress.getIP(request);
-        String userAgent = request.getHeader("User-Agent");
-        RequestMetadata metaData = new RequestMetadata(ip, userAgent);
-        LoginResult res = loginService.login(entity, metaData);
-        if (!res.status()) {
+
+        AuthResult authResult = loginService.authenticate(entity);
+        if (!authResult.success()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        ResponseCookie refreshToken = ResponseCookie.from("refresh_token", res.refreshToken())
+
+        // Generate tokens
+        String ip = clientIPAddress.getIP(request);
+        String userAgent = request.getHeader("User-Agent");
+        String jwt = jwtService.generateToken(authResult.subject());
+        String refreshToken = refreshTokenService.generate(
+                new CreateRefreshTokenRequest(authResult.subject(), ip, userAgent));
+
+        ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refreshToken)
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
                 .sameSite("Strict")
                 .maxAge(30 * 24 * 60 * 60)
                 .build();
-        response.addHeader("Set-Cookie", refreshToken.toString());
+        response.addHeader("Set-Cookie", refreshCookie.toString());
         String redirectUrl = (redirect != null && !redirect.isBlank()) ? redirect : "/";
         return ResponseEntity
                 .status(HttpStatus.FOUND)
