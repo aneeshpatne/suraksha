@@ -2,6 +2,7 @@ package com.aneesh.suraksha.users.controller;
 
 import com.aneesh.suraksha.users.service.*;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -187,7 +188,7 @@ public class UserController {
                 .secure(true)
                 .path("/")
                 .sameSite("Strict")
-                .maxAge(15 * 60) // 15 minutes
+                .maxAge(1 * 60)
                 .build();
         ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refreshToken)
                 .httpOnly(true)
@@ -196,12 +197,11 @@ public class UserController {
                 .sameSite("Strict")
                 .maxAge(30 * 24 * 60 * 60)
                 .build();
-        response.addHeader("Set-Cookie", jwtCookie.toString());
-        response.addHeader("Set-Cookie", refreshCookie.toString());
         String redirectUrl = (redirect != null && !redirect.isBlank()) ? redirect : "/";
         return ResponseEntity
                 .status(HttpStatus.FOUND)
-                .header("Location", redirectUrl)
+                .header(HttpHeaders.SET_COOKIE, jwtCookie.toString(), refreshCookie.toString())
+                .header(HttpHeaders.LOCATION, redirectUrl)
                 .build();
     }
 
