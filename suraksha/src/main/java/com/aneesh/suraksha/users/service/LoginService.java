@@ -14,15 +14,19 @@ import com.aneesh.suraksha.users.model.UserRepository;
 @Service
 public class LoginService {
 
+    private final TwofactorService twofactorService;
+
     private static final Logger logger = LoggerFactory.getLogger(LoginService.class);
 
     private final PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
 
-    public LoginService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public LoginService(UserRepository userRepository, PasswordEncoder passwordEncoder,
+            TwofactorService twofactorService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.twofactorService = twofactorService;
     }
 
     public AuthResult authenticate(LoginRequest request) {
@@ -38,8 +42,13 @@ public class LoginService {
             if (!match) {
                 return AuthResult.failure("Invalid credentials");
             }
-
             TokenSubject subject = TokenSubject.fromUser(user);
+            if (user.getTwoFaType().equals("otp")) {
+                Boolean status = twofactorService.Generate(subject);
+                if (status) {
+                    return AuthResult.two_fa_required();
+                }
+            }
             return AuthResult.success(subject);
         } catch (Exception e) {
             logger.error("Error during authentication for user: {}", request.mailId(), e);
