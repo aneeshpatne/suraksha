@@ -28,7 +28,7 @@ public class OtpService {
 
     public void OtpFlow() {
         String otp = generateOtp();
-        String key = "otp:login:" + 1234;
+        String key = "otp:login:" + otp;
         stringRedisTemplate.opsForValue().set(key, otp, 5, TimeUnit.MINUTES);
 
         String emailBody = generateEmailBody(otp);
