@@ -135,7 +135,8 @@ public class UserController {
 
     @PostMapping("/api/v1/auth/refresh")
     public ResponseEntity<RefreshResponse> refresh(
-            @CookieValue(name = "refresh_token", required = false) String rawToken) {
+            @CookieValue(name = "refresh_token", required = false) String rawToken,
+            HttpServletResponse response) {
         if (rawToken == null || rawToken.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -145,6 +146,14 @@ public class UserController {
         }
 
         String token = jwtService.generateToken(status.subject());
+        ResponseCookie jwtCookie = ResponseCookie.from("jwt", token)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .sameSite("Strict")
+                .maxAge(15 * 60)
+                .build();
+        response.addHeader("Set-Cookie", jwtCookie.toString());
         return ResponseEntity.ok(new RefreshResponse(token));
     }
 
@@ -169,6 +178,13 @@ public class UserController {
         String refreshToken = refreshTokenService.generate(
                 new CreateRefreshTokenRequest(authResult.subject(), ip, userAgent));
 
+        ResponseCookie jwtCookie = ResponseCookie.from("jwt", jwt)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .sameSite("Strict")
+                .maxAge(15 * 60) // 15 minutes
+                .build();
         ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refreshToken)
                 .httpOnly(true)
                 .secure(true)
@@ -176,6 +192,7 @@ public class UserController {
                 .sameSite("Strict")
                 .maxAge(30 * 24 * 60 * 60)
                 .build();
+        response.addHeader("Set-Cookie", jwtCookie.toString());
         response.addHeader("Set-Cookie", refreshCookie.toString());
         String redirectUrl = (redirect != null && !redirect.isBlank()) ? redirect : "/";
         return ResponseEntity
