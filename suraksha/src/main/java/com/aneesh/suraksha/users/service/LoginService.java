@@ -43,7 +43,7 @@ public class LoginService {
                 return AuthResult.failure("Invalid credentials");
             }
             TokenSubject subject = TokenSubject.fromUser(user);
-            if (user.getTwoFaType().equals("otp")) {
+            if ("otp".equals(user.getTwoFaType())) {
                 String token = twofactorService.Generate(subject);
                 if (token != null) {
                     return AuthResult.two_fa_required(token);
