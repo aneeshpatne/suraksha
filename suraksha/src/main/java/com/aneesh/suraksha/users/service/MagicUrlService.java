@@ -4,9 +4,6 @@ import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.Base64;
 
-import com.aneesh.suraksha.config.RabbitMQConfig;
-
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -28,15 +25,15 @@ public class MagicUrlService {
     public static final SecureRandom secureRandom = new SecureRandom();
     private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper;
-    private final RabbitTemplate rabbitTemplate;
+    private final MailSenderService mailSenderService;
 
     public MagicUrlService(StringRedisTemplate stringRedisTemplate, ObjectMapper objectMapper,
-            RabbitTemplate rabbitTemplate, JwtService jwtService, RefreshTokenService refreshTokenService) {
+            JwtService jwtService, RefreshTokenService refreshTokenService, MailSenderService mailSenderService) {
         this.stringRedisTemplate = stringRedisTemplate;
         this.objectMapper = objectMapper;
-        this.rabbitTemplate = rabbitTemplate;
         this.jwtService = jwtService;
         this.refreshTokenService = refreshTokenService;
+        this.mailSenderService = mailSenderService;
     }
 
     private String generateRandomMagicBytes() {
@@ -61,8 +58,7 @@ public class MagicUrlService {
             MailDto mailDto = new MailDto("aneeshpatne@gmail.com",
                     "Suraksha Magic Sign In", emailBody);
 
-            rabbitTemplate.convertAndSend(RabbitMQConfig.EMAIL_EXCHANGE,
-                    RabbitMQConfig.EMAIL_ROUTING_KEY, mailDto);
+            mailSenderService.send(mailDto);
 
         } catch (Exception e) {
             throw new RuntimeException("Failed to generate magic URL", e);
