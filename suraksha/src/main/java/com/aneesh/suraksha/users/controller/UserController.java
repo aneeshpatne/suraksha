@@ -255,7 +255,8 @@ public class UserController {
     }
 
     @PostMapping("/api/v1/magic-url")
-    public ResponseEntity<MagicLinkResponse> magicURL(@RequestBody MagicLinkRequest entity) {
+    public ResponseEntity<MagicLinkResponse> magicURL(@RequestBody MagicLinkRequest entity,
+            @RequestParam(required = false) String redirect) {
         UserEntity user = userRepository.findByMailId(entity.mailId());
         if (user != null) {
             magicUrlService.SendMagicUrl(user);
