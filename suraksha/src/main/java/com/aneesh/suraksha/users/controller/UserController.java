@@ -259,7 +259,7 @@ public class UserController {
             @RequestParam(required = false) String redirect) {
         UserEntity user = userRepository.findByMailId(entity.mailId());
         if (user != null) {
-            magicUrlService.SendMagicUrl(user);
+            magicUrlService.SendMagicUrl(user, redirect);
         }
         return ResponseEntity.ok(new MagicLinkResponse(true));
     }

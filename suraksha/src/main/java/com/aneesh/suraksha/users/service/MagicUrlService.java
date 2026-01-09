@@ -44,7 +44,7 @@ public class MagicUrlService {
         return prefix + randomPart;
     }
 
-    public void SendMagicUrl(UserEntity user) {
+    public void SendMagicUrl(UserEntity user, String redirect) {
         try {
             String magicUrl = generateRandomMagicBytes();
             String key = "magic:" + magicUrl;
@@ -52,7 +52,8 @@ public class MagicUrlService {
             String json = objectMapper.writeValueAsString(payload);
             stringRedisTemplate.opsForValue().set(key, json, Duration.ofMinutes(10));
 
-            String fullMagicLink = "http://localhost:8080/api/v1/verify-magic-url?token=" + magicUrl;
+            String fullMagicLink = "http://localhost:8080/api/v1/verify-magic-url?token=" + magicUrl +
+                    (redirect != null ? "&redirect=" + redirect : "");
             String emailBody = generateEmailBody(fullMagicLink);
 
             MailDto mailDto = new MailDto("aneeshpatne@gmail.com",
