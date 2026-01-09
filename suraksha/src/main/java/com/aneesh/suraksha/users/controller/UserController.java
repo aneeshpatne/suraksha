@@ -30,7 +30,7 @@ import com.aneesh.suraksha.users.dto.RegisterResult;
 import com.aneesh.suraksha.users.dto.MagicLinkRequest;
 import com.aneesh.suraksha.users.dto.MagicLinkResponse;
 import com.aneesh.suraksha.users.dto.MagicLinkVerifyRequest;
-import com.aneesh.suraksha.users.dto.MagicLinkVerifyResponse;
+
 import com.aneesh.suraksha.users.dto.OTPRequest;
 import com.aneesh.suraksha.users.dto.OTPResponse;
 import com.aneesh.suraksha.users.dto.RefreshCheckCheckResponse;
@@ -264,15 +264,30 @@ public class UserController {
     }
 
     @GetMapping("/api/v1/verify-magic-url")
-    public ResponseEntity<MagicLinkVerifyResponse> verifyMagicURL(@ModelAttribute MagicLinkVerifyRequest param,
+    public ResponseEntity<Void> verifyMagicURL(@ModelAttribute MagicLinkVerifyRequest param,
             HttpServletRequest request, HttpServletResponse response) {
         String ip = clientIPAddress.getIP(request);
         String userAgent = request.getHeader("User-Agent");
         RequestMetadata metaData = new RequestMetadata(ip, userAgent);
+
+        Boolean isConditionMet = validRedirectService.validate("magic-link", param.redirect());
+        if (!isConditionMet) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         MagicLinkResult res = magicUrlService.verifySendMagicUrl(param.token(), metaData);
         if (!res.status()) {
-            return ResponseEntity.badRequest().body(new MagicLinkVerifyResponse(null, null, false));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
+        ResponseCookie jwtCookie = ResponseCookie.from("jwt", res.jwt())
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .sameSite("Strict")
+                .maxAge(1 * 60)
+                .build();
+
         ResponseCookie refreshToken = ResponseCookie.from("refresh_token", res.refreshToken())
                 .httpOnly(true)
                 .secure(true)
@@ -280,8 +295,13 @@ public class UserController {
                 .sameSite("Strict")
                 .maxAge(30 * 24 * 60 * 60)
                 .build();
-        response.addHeader("Set-Cookie", refreshToken.toString());
-        return ResponseEntity.ok().body(new MagicLinkVerifyResponse(res.userId(), res.jwt(), true));
+
+        String redirectUrl = (param.redirect() != null && !param.redirect().isBlank()) ? param.redirect() : "/";
+
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .header(HttpHeaders.SET_COOKIE, jwtCookie.toString(), refreshToken.toString())
+                .header(HttpHeaders.LOCATION, redirectUrl)
+                .build();
     }
 
     @GetMapping("/api/v1/organisations")
