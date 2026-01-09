@@ -1,5 +1,6 @@
 package com.aneesh.suraksha.users.service;
 
+import java.util.concurrent.TimeUnit;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
@@ -21,8 +22,15 @@ public class TwofactorService {
     }
 
     public Boolean Generate(TokenSubject tokenSubject) {
-        String otp = otpService.
-
+        String otp = otpService.generateOtp();
+        try {
+            stringRedisTemplate.opsForValue()
+                    .set("2fa:" + tokenSubject.organisationId() + ":" + tokenSubject.mailId() + ":" + otp,
+                            objectMapper.writeValueAsString(tokenSubject), 2, TimeUnit.MINUTES);
+            return true;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate 2FA token");
+        }
     }
 
 }
