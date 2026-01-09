@@ -255,12 +255,12 @@ public class UserController {
     }
 
     @PostMapping("/api/v1/magic-url")
-    public MagicLinkResponse magicURL(@RequestBody MagicLinkRequest entity) {
+    public ResponseEntity<MagicLinkResponse> magicURL(@RequestBody MagicLinkRequest entity) {
         UserEntity user = userRepository.findByMailId(entity.mailId());
-        magicUrlService.SendMagicUrl(user);
-        MagicLinkResponse res = new MagicLinkResponse(true);
-        return res;
-
+        if (user != null) {
+            magicUrlService.SendMagicUrl(user);
+        }
+        return ResponseEntity.ok(new MagicLinkResponse(true));
     }
 
     @GetMapping("/api/v1/verify-magic-url")
