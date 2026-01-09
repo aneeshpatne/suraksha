@@ -37,7 +37,7 @@ import com.aneesh.suraksha.users.dto.RefreshCheckCheckResponse;
 import com.aneesh.suraksha.users.dto.RefreshResponse;
 import com.aneesh.suraksha.users.dto.UserDto;
 import com.aneesh.suraksha.users.dto.RequestMetadata;
-
+import com.aneesh.suraksha.users.dto.TokenSubject;
 import com.aneesh.suraksha.users.dto.MagicLinkResult;
 import com.aneesh.suraksha.users.dto.LogoutResponse;
 import com.aneesh.suraksha.users.model.Organisations;
@@ -49,6 +49,8 @@ import java.util.List;
 
 @RestController
 public class UserController {
+
+    private final TwofactorService twofactorService;
 
     private final ValidRedirectService validRedirectService;
 
@@ -79,7 +81,8 @@ public class UserController {
             OrganisationsRepository organisationsRepository, OrganisationOnboard organisationOnboard,
             ClientIPAddress clientIPAddress,
             RefreshTokenService refreshTokenService, MagicUrlService magicUrlService, RefreshCheck refreshCheck,
-            JwtService jwtService, LogoutService logoutService, ValidRedirectService validRedirectService) {
+            JwtService jwtService, LogoutService logoutService, ValidRedirectService validRedirectService,
+            TwofactorService twofactorService) {
         this.userRepository = userRepository;
         this.registrationService = registrationService;
         this.loginService = loginService;
@@ -92,6 +95,7 @@ public class UserController {
         this.refreshTokenService = refreshTokenService;
         this.logoutService = logoutService;
         this.validRedirectService = validRedirectService;
+        this.twofactorService = twofactorService;
     }
 
     @PostMapping("/api/v1/auth/register")
@@ -161,7 +165,12 @@ public class UserController {
     }
 
     @PostMapping("/api/v1/auth/2fa/otp")
-    public ResponseEntity<OTPResponse> OTPVerify(@RequestBody OTPRequest entity) {
+    public ResponseEntity<OTPResponse> OTPVerify(@RequestBody OTPRequest entity, HttpServletResponse response,
+            HttpServletRequest request) {
+        TokenSubject token = twofactorService.Validate(entity.OTP());
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
 
     }
 
