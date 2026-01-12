@@ -136,12 +136,20 @@ graph TB
     TokenSvc --> Redis
     OrgSvc --> PG
 
-    style Client fill:#e1f5ff
-    style API fill:#fff9c4
-    style PG fill:#c8e6c9
-    style Redis fill:#ffcdd2
-    style RMQ fill:#ffe0b2
-    style JWT fill:#f8bbd0
+    style Client fill:#bbdefb,stroke:#1976d2,stroke-width:2px,color:#000
+    style API fill:#fff9c4,stroke:#f57f17,stroke-width:2px,color:#000
+    style JWKS fill:#fff9c4,stroke:#f57f17,stroke-width:2px,color:#000
+    style AuthSvc fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,color:#000
+    style TokenSvc fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,color:#000
+    style EmailSvc fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,color:#000
+    style OrgSvc fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,color:#000
+    style JWT fill:#f8bbd0,stroke:#c2185b,stroke-width:2px,color:#000
+    style Hash fill:#f8bbd0,stroke:#c2185b,stroke-width:2px,color:#000
+    style Valid fill:#f8bbd0,stroke:#c2185b,stroke-width:2px,color:#000
+    style PG fill:#b2dfdb,stroke:#00796b,stroke-width:2px,color:#000
+    style Redis fill:#ffccbc,stroke:#d84315,stroke-width:2px,color:#000
+    style RMQ fill:#ffe0b2,stroke:#ef6c00,stroke-width:2px,color:#000
+    style SMTP fill:#d1c4e9,stroke:#512da8,stroke-width:2px,color:#000
 ```
 
 ### Deployment Architecture
@@ -182,13 +190,13 @@ graph LR
 ### Component Interaction
 
 ```mermaid
-graph TB
-    subgraph "Controllers"
+graph LR
+    subgraph Controllers["Controllers"]
         UC[UserController]
         JC[JwksController]
     end
 
-    subgraph "Core Services"
+    subgraph CoreServices["Core Services"]
         LS[LoginService]
         RS[RegistrationService]
         MUS[MagicUrlService]
@@ -198,7 +206,7 @@ graph TB
         LOS[LogoutService]
     end
 
-    subgraph "Support Services"
+    subgraph SupportServices["Support Services"]
         JS[JwtService]
         OS[OtpService]
         HS[HashingService]
@@ -208,7 +216,7 @@ graph TB
         MSS[MailSenderService]
     end
 
-    subgraph "Data Access"
+    subgraph DataAccess["Data Access"]
         UR[UserRepository]
         OR[OrganisationsRepository]
         RTR[RefreshTokenRepository]
@@ -254,12 +262,28 @@ graph TB
     RS --> OR
     RTS --> RTR
 
-    style UC fill:#64b5f6
-    style JC fill:#64b5f6
-    style LS fill:#81c784
-    style RS fill:#81c784
-    style JS fill:#ffb74d
-    style HS fill:#ffb74d
+    style UC fill:#bbdefb,stroke:#1976d2,stroke-width:2px,color:#000
+    style JC fill:#bbdefb,stroke:#1976d2,stroke-width:2px,color:#000
+
+    style LS fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,color:#000
+    style RS fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,color:#000
+    style MUS fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,color:#000
+    style TFS fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,color:#000
+    style FPS fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,color:#000
+    style RTS fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,color:#000
+    style LOS fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,color:#000
+
+    style JS fill:#fff9c4,stroke:#f57f17,stroke-width:2px,color:#000
+    style OS fill:#fff9c4,stroke:#f57f17,stroke-width:2px,color:#000
+    style HS fill:#fff9c4,stroke:#f57f17,stroke-width:2px,color:#000
+    style HMS fill:#fff9c4,stroke:#f57f17,stroke-width:2px,color:#000
+    style VRS fill:#fff9c4,stroke:#f57f17,stroke-width:2px,color:#000
+    style ETS fill:#fff9c4,stroke:#f57f17,stroke-width:2px,color:#000
+    style MSS fill:#fff9c4,stroke:#f57f17,stroke-width:2px,color:#000
+
+    style UR fill:#f8bbd0,stroke:#c2185b,stroke-width:2px,color:#000
+    style OR fill:#f8bbd0,stroke:#c2185b,stroke-width:2px,color:#000
+    style RTR fill:#f8bbd0,stroke:#c2185b,stroke-width:2px,color:#000
 ```
 
 ---
